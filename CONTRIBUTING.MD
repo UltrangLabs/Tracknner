@@ -111,15 +111,31 @@ type(scope): imperative description
 - **`refactor`**: Úsalo para cambios en el código que no corrigen un bug ni agregan una funcionalidad, pero mejoran su estructura (como extraer un widget).
 - **`chore`**: Úsalo para tareas de mantenimiento, actualizaciones de dependencias, configuración de herramientas o CI.
 
-**Ejemplos Prácticos:**
+### Scopes permitidos
 
-1. `feat(shared): add primary button component`
-2. `fix(root): resolve app crash on startup`
-3. `chore(deps): update flutter version to 3.24`
+Scope Carpeta
 
-### Scopes permitidos (Módulos de Negocio)
+---
 
-- `deps`, `tools`, `docs`, `root`, `ci`: Configuraciones transversales.
+- **core**: `lib/core/`
+- **shared**: `lib/shared/`
+- **profile**: `lib/modules/profile/`
+- **activity**: `lib/modules/activity/`
+- **game-engine**: `lib/modules/game_engine/`
+- **deps**: Dependencias (pubspec.yaml)
+- **tools**: Scripts y herramientas
+- **docs**: Archivos `.md` y documentación
+- **root**: Configuración principal
+- **ci**: GitHub Actions, Husky, CI
+
+### Ejemplos válidos
+
+```bash
+git commit -m "feat(activity): create gps tracker component"
+git commit -m "fix(shared): resolve text formatting"
+git commit -m "docs(root): update contributing guide"
+git commit -m "chore(ci): update commitlint configuration"
+```
 
 ---
 

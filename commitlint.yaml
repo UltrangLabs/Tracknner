@@ -9,7 +9,7 @@ rules:
   scope-enum:
     - 2
     - always
-    - [deps, tools, docs, root, ci]
+    - [deps, tools, docs, root, ci, core, shared, profile, activity, game-engine]
   scope-case: [2, always, kebab-case]
   scope-empty: [1, never]
 
