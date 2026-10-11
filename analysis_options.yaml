@@ -33,7 +33,7 @@ linter:
 
     # --- ESTRUCTURA Y FLUJO ---
     always_declare_return_types: true
-    always_use_package_imports: true
+    #always_use_package_imports: true
     curly_braces_in_flow_control_structures: true
 
     # --- CALIDAD Y MODERNIDAD ---
@@ -48,6 +48,8 @@ linter:
     # Prohíbe el uso de funciones de alto coste si hay alternativas nativas
     prefer_is_empty: true
     prefer_is_not_empty: true
+
+    prefer_relative_imports: true
 
     # --- DART SPECIFIC ---
     avoid_classes_with_only_static_members: true
