@@ -11,8 +11,12 @@
     }
   },
   "rules": [
-    { "type": "deletion" },
-    { "type": "non_fast_forward" },
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
     {
       "type": "pull_request",
       "parameters": {
@@ -27,8 +31,12 @@
       "type": "required_status_checks",
       "parameters": {
         "strict_required_status_checks_policy": true,
+        "do_not_enforce_on_create": true,
         "required_status_checks": [
-          { "context": "Validate PR", "integration_id": 15368 }
+          {
+            "context": "Validate PR",
+            "integration_id": 15368
+          }
         ]
       }
     }
