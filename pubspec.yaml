@@ -39,6 +39,9 @@ dependencies:
   path: ^1.9.1
   logger: ^2.8.0
   sqflite_common_ffi: ^2.4.3
+  uuid: ^4.6.0
+  lucid_validation: ^1.4.0
+  get_it: ^9.3.0
 
 dev_dependencies:
   flutter_test:
