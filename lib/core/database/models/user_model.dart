@@ -1,6 +1,6 @@
-import '../interfaces/database_schema.dart';
+import '../interfaces/database_model.dart';
 
-class UserSchema implements DatabaseSchema {
+class UserModel implements DatabaseModel {
   @override
   String get tableName => 'User';
 
@@ -8,6 +8,7 @@ class UserSchema implements DatabaseSchema {
   String get createTableQuery => '''
     CREATE TABLE User (
       userId INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,      
       virtualCoins INTEGER NOT NULL DEFAULT 0,
       currentStreak INTEGER NOT NULL DEFAULT 0,
       highestStreak INTEGER NOT NULL DEFAULT 0,

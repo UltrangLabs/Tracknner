@@ -1,6 +1,6 @@
-import '../interfaces/database_schema.dart';
+import '../interfaces/database_model.dart';
 
-class DailyMissionSchema implements DatabaseSchema {
+class DailyMissionModel implements DatabaseModel {
   @override
   String get tableName => 'DailyMission';
 

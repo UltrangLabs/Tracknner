@@ -5,11 +5,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_common_ffi.dart';
 
 import '../../adapters/logger_adapter.dart' as log_adapter;
-import '../interfaces/database_schema.dart';
+import '../interfaces/database_model.dart';
 import '../interfaces/local_db_client.dart';
 
 class DatabaseConnection implements LocalDbClient {
-  final List<DatabaseSchema> models;
+  final List<DatabaseModel> models;
   final String databaseName;
   final int databaseVersion;
 
@@ -110,7 +110,7 @@ class DatabaseConnection implements LocalDbClient {
   }
 
   Future<void> _forceSynchronization(Database db, int version) async {
-    for (final DatabaseSchema model in models) {
+    for (final DatabaseModel model in models) {
       log_adapter.logYellowBold('Syncing table: ${model.tableName}...');
       await db.execute(model.createTableQuery);
     }

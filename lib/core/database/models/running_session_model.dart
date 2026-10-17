@@ -1,6 +1,6 @@
-import '../interfaces/database_schema.dart';
+import '../interfaces/database_model.dart';
 
-class RunningSessionSchema implements DatabaseSchema {
+class RunningSessionModel implements DatabaseModel {
   @override
   String get tableName => 'RunningSession';
 

@@ -1,6 +1,6 @@
-import '../interfaces/database_schema.dart';
+import '../interfaces/database_model.dart';
 
-class PetSchema implements DatabaseSchema {
+class PetModel implements DatabaseModel {
   @override
   String get tableName => 'Pet';
 
