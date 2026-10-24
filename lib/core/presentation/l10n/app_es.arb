@@ -1,0 +1,14 @@
+{
+    "@@locale": "es",
+    "applicationTitle": "Tracknner",
+    "startRunningButton": "Comenzar a Correr",
+    "stopRunningButton": "Detener Carrera",
+    "distanceTraveledMessage": "¡Has corrido {distanceInKilometers} kilómetros!",
+    "errorBadRequest": "Petición incorrecta. Revisa tus datos.",
+    "errorUnauthorized": "No estás autorizado para realizar esta acción.",
+    "errorForbidden": "Acceso denegado.",
+    "errorNotFound": "El recurso no fue encontrado.",
+    "errorInternalServer": "Error interno del servidor.",
+    "errorServiceUnavailable": "Servicio no disponible temporalmente.",
+    "errorUnexpected": "Ocurrió un error inesperado."
+}

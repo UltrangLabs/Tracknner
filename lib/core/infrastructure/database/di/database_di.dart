@@ -1,4 +1,4 @@
-import '../../di/injection_container.dart';
+import '../../../di/injection_container.dart';
 import '../config/database_connection.dart';
 import '../interfaces/local_db_client.dart';
 import '../models/daily_mission_model.dart';

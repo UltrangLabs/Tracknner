@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-import '../types/app_uuid.dart';
+import '../../domain/types/app_uuid.dart';
 
 const Uuid _uuidGenerator = Uuid();
 

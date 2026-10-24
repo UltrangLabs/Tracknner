@@ -1,6 +1,6 @@
 import 'package:lucid_validation/lucid_validation.dart';
 
-import '../errors/custom_error.dart';
+import '../../domain/errors/custom_error.dart';
 
 class ValidatorAdapter<TExpectedEntity> {
   final LucidValidator<TExpectedEntity> _schemaValidator;
