@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'core/adapters/logger_adapter.dart' as logger_adapter;
-import 'core/database/di/database_di.dart';
+import 'core/infrastructure/adapters/logger_adapter.dart' as logger_adapter;
+import 'core/infrastructure/database/di/database_di.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

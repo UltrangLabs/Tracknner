@@ -1,0 +1,8 @@
+# Carpeta donde vivirán nuestros diccionarios
+arb-dir: lib/core/presentation/l10n
+
+# El archivo base que Flutter usará como plantilla principal
+template-arb-file: app_en.arb
+
+# El nombre del archivo Dart que se generará automáticamente
+output-localization-file: app_localizations.dart
