@@ -1,4 +1,4 @@
-import '../../../../core/types/app_uuid.dart';
+import '../../../../core/domain/types/app_uuid.dart';
 
 class User {
   final AppUuid id;

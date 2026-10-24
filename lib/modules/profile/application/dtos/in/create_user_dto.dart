@@ -1,5 +1,5 @@
-import '../../../../../core/adapters/validator_adapter.dart';
-import '../../../../../core/types/unknown_type.dart';
+import '../../../../../core/domain/types/unknown_type.dart';
+import '../../../../../core/infrastructure/adapters/validator_adapter.dart';
 import '../../../domain/dtos/in/create_user_dto.dart';
 
 typedef ValidatorCreateUserDto = ValidatorAdapter<CreateUserDto>;
