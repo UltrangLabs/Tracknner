@@ -1,12 +1,31 @@
 # =======================================================
-# Github PR Auto-Labeler Configuration (Flutter Version)
+# GitHub PR Auto-Labeler Configuration (Tracknner)
 # =======================================================
 
+'📦 Almacenamiento Offline':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/core/database/**/*'
 
-'epic: ej-1':
-  - any:
-      - 'lib/modules/ej-1/**/*'
+'🧠 Lógica de Negocio':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/**/domain/**/*'
+          - 'lib/**/application/**/*'
 
-'epic: ej-2':
-  - any:
-      - 'lib/modules/admindesk/**/*'
+'🏃 Flujo de Carrera':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/modules/activity/**/*'
+
+'🐶 Economía y Mascota':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/modules/game_engine/pet_core/**/*'
+          - 'lib/modules/game_engine/shop/**/*'
+          - 'lib/modules/game_engine/monetization/**/*'
+
+'🎯 Gamificación':
+  - changed-files:
+      - any-glob-to-any-file:
+          - 'lib/modules/game_engine/missions/**/*'
