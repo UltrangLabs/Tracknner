@@ -2,9 +2,10 @@
 
 ¡Gracias por contribuir a este proyecto! Este documento describe las convenciones, arquitectura y flujos de trabajo que seguimos para mantener un desarrollo organizado, ágil y de alta calidad técnica en nuestra aplicación móvil multiplataforma.
 
-Para ayudarnos a mantener el código impecable y altamente estandarizado, **te invitamos a leer detenidamente** nuestros documentos principales de estilo antes de escribir tu primera línea de código. ¡Son tu mejor guía para evitar rechazos en los PRs!
-👉 [Criterios de Calidad de Código](QUALITY_CRITERIA.md)
-👉 [Estructura de Arquitectura Limpia](.docs/structure.md)
+Para ayudarnos a mantener el código impecable y altamente estandarizado, **te invitamos a leer detenidamente** nuestros documentos principales de estilo y arquitectura antes de escribir tu primera línea de código. ¡Son tu mejor guía para evitar rechazos en los PRs!
+👉 [Criterios de Calidad de Código](.docs/quality/quality-criteria.md)
+👉 [Criterios de Calidad para la Capa de Presentación (UI & Widgets)](.docs/quality/quality-presentation-criteria.md)
+👉 [Estructura de Arquitectura Limpia](.docs/architecture/project-structure.md)
 
 ---
 
@@ -144,9 +145,10 @@ git commit -m "chore(ci): update commitlint configuration"
 Tu código debe respetar el `analysis_options.yaml` en modo estricto. De lo contrario, el CI fallará:
 
 1. **Clean Architecture:** La capa de Dominio no debe conocer a Flutter (`package:flutter`). Mantenla en Dart puro. La capa de Presentación y de Datos se comunican exclusivamente a través del Dominio.
-2. **Importaciones Absolutas:** Prohibido usar rutas relativas para salir de tu módulo (`../../`). Utiliza siempre Package Imports: `import 'package:mi_app/shared/theme.dart';`.
-3. **Tipado Estricto:** Está estrictamente prohibido el uso de `dynamic` y todos los métodos deben tener un tipo de retorno declarado.
-4. **Cero Advertencias:** Todo el código debe estar libre de "blue lines" (warnings).
+2. **Criterios de Presentación (UI & Widgets):** Cumplimiento obligatorio de la Stepdown Rule, widgets en clases dedicadas (`StatelessWidget`/`StatefulWidget`), extracción de elementos estáticos fuera de `build()` y liberación de controladores con `dispose()` ([Ver detalles](.docs/quality/quality-presentation-criteria.md)).
+3. **Importaciones Absolutas:** Prohibido usar rutas relativas para salir de tu módulo (`../../`). Utiliza siempre Package Imports: `import 'package:mi_app/shared/theme.dart';`.
+4. **Tipado Estricto:** Está estrictamente prohibido el uso de `dynamic` y todos los métodos deben tener un tipo de retorno declarado.
+5. **Cero Advertencias:** Todo el código debe estar libre de "blue lines" (warnings).
 
 ---
 
@@ -189,6 +191,7 @@ Tu código debe respetar el `analysis_options.yaml` en modo estricto. De lo cont
 ## ✅ Checklist antes de solicitar un Code Review
 
 - [ ] Entendí los Criterios de Aceptación del ticket Kanban.
+- [ ] Apliqué los [Criterios de Calidad](.docs/quality/quality-criteria.md) y [Criterios de Presentación](.docs/quality/quality-presentation-criteria.md).
 - [ ] Ejecuté `dart format .` o guardé en VS Code para ordenar el código.
 - [ ] Ejecuté `flutter analyze` y solucioné todos los infos/warnings.
 - [ ] El nombre de mi rama sigue la estructura con el ID del ticket al final.

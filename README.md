@@ -1,6 +1,6 @@
 <!-- Plantilla base -->
 
-# [Nombre de tu Aplicación Flutter]
+# Tracknner
 
 Aplicación móvil multiplataforma desarrollada con **Flutter** y **Dart** bajo principios de Clean Architecture.
 
@@ -12,7 +12,7 @@ Aplicación móvil multiplataforma desarrollada con **Flutter** y **Dart** bajo 
 
 - Asegúrate de que no haya problemas en tu entorno ejecutando `flutter doctor`.
 
-- **IMPORTANTE:** Para poder realizar contribuciones al proyecto, es **indispensable** leer el archivo [CONTRIBUTING.md](CONTRIBUTING.md) para conocer las convenciones del proyecto, así como los [Criterios de Calidad de Código](QUALITY_CRITERIA.md).
+- **IMPORTANTE:** Para poder realizar contribuciones al proyecto, es **indispensable** leer el archivo [CONTRIBUTING.MD](CONTRIBUTING.MD) para conocer las convenciones del proyecto, así como los [Criterios de Calidad de Código](.docs/quality/quality-criteria.md) y los [Criterios de Calidad para Presentación (UI & Widgets)](.docs/quality/quality-presentation-criteria.md).
 
 ## 🚀 Instalación y Ejecución
 

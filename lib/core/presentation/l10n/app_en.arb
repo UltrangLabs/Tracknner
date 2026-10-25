@@ -1,0 +1,53 @@
+{
+    "@@locale": "en",
+    "applicationTitle": "Tracknner",
+    "@applicationTitle": {
+        "description": "The title of the application shown in the app bar"
+    },
+    "startRunningButton": "Start Running",
+    "@startRunningButton": {
+        "description": "Text for the button to start the GPS tracking"
+    },
+    "stopRunningButton": "Stop Running",
+    "@stopRunningButton": {
+        "description": "Text for the button to stop the GPS tracking"
+    },
+    "distanceTraveledMessage": "You have run {distanceInKilometers} kilometers!",
+    "@distanceTraveledMessage": {
+        "description": "Message showing the distance ran by the user",
+        "placeholders": {
+            "distanceInKilometers": {
+                "type": "double",
+                "example": "5.2"
+            }
+        }
+    },
+    "errorBadRequest": "Bad request. Please check your data.",
+    "@errorBadRequest": {
+        "description": "Error message when a bad request occurs"
+    },
+    "errorUnauthorized": "You are not authorized to perform this action.",
+    "@errorUnauthorized": {
+        "description": "Error message when the user is unauthorized"
+    },
+    "errorForbidden": "Access denied.",
+    "@errorForbidden": {
+        "description": "Error message when access is forbidden"
+    },
+    "errorNotFound": "Resource not found.",
+    "@errorNotFound": {
+        "description": "Error message when a resource is not found"
+    },
+    "errorInternalServer": "Internal server error.",
+    "@errorInternalServer": {
+        "description": "Error message when an internal server error occurs"
+    },
+    "errorServiceUnavailable": "Service temporarily unavailable.",
+    "@errorServiceUnavailable": {
+        "description": "Error message when the service is temporarily unavailable"
+    },
+    "errorUnexpected": "An unexpected error occurred.",
+    "@errorUnexpected": {
+        "description": "Fallback error message when an unexpected error occurs"
+    }
+}

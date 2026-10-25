@@ -108,6 +108,14 @@ jobs:
           requireScope: false
           subjectPattern: ^(?=.{1,120}$)[a-zA-Z].+$
 
+      # ── PR Auto-Labeler ────────────────────────────────────────────────
+
+      - name: Automatically label PR
+        uses: actions/labeler@v5
+        with:
+          configuration-path: .github/labeler.yml
+          sync-labels: false
+
       # ── Nivel 1: Base (TODAS las ramas) ────────────────────────────────
       # Formato estricto y análisis estático (sintaxis, tipos estricto, variables sin uso)
 

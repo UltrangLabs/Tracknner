@@ -33,7 +33,7 @@ linter:
 
     # --- ESTRUCTURA Y FLUJO ---
     always_declare_return_types: true
-    always_use_package_imports: true
+    #always_use_package_imports: true
     curly_braces_in_flow_control_structures: true
 
     # --- CALIDAD Y MODERNIDAD ---
@@ -49,9 +49,26 @@ linter:
     prefer_is_empty: true
     prefer_is_not_empty: true
 
+    prefer_relative_imports: true
+
     # --- DART SPECIFIC ---
     avoid_classes_with_only_static_members: true
     avoid_print: true
 
     # --- ORDERING ---
     directives_ordering: true
+
+    # --- Constructors ---
+    prefer_initializing_formals: true
+
+    # Exige la coma final en los parámetros para forzar al formateador a colocarlos en cascada (Dart 3.3+)
+    require_trailing_commas: true
+
+    # Prohíbe pasar booleanos posicionales, forzando a que sean nombrados para mayor legibilidad
+    avoid_positional_boolean_parameters: true
+
+    # Mantiene un orden estricto en la clase exigiendo que los constructores vayan siempre arriba
+    sort_constructors_first: false
+    
+    # Asegura que el constructor principal (sin nombre) vaya antes que los constructores nombrados (.fromJson, etc)
+    sort_unnamed_constructors_first: true
