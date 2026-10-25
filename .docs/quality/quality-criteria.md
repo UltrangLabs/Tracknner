@@ -122,3 +122,40 @@ final paint = Paint()
   ..strokeWidth = 5.0
   ..style = PaintingStyle.stroke;
 ```
+
+### Firmas y Parámetros de Métodos y Funciones
+
+Para garantizar la legibilidad del código, evitar confusiones en los sitios de llamada y prevenir errores humanos al ordenar variables, las firmas de funciones y métodos deben adherirse estrictamente a las siguientes reglas durante los Pull Requests:
+
+- **Argumento único (Posicional):** Si una función o método recibe **exactamente un parámetro** que no sea booleano (por ejemplo, un DTO de entrada en un Caso de Uso o servicio), este debe ser **posicional**. Esto reduce la verbosidad innecesaria en firmas simples.
+- **Múltiples argumentos (Nombrados):** Si una función o método requiere **dos o más parámetros**, todos deben ser **nombrados** (`{required ...}`). Esto previene errores comunes de inversión de argumentos (especialmente de tipos similares como `String`, `int` o `double`) y auto-documenta el punto de invocación.
+- **Excepción estricta para booleanos (Siempre Nombrados):** Cualquier parámetro de tipo `bool` debe ser **nombrado**, sin excepción, incluso si es el único parámetro de la función. Esto evita el antipatrón de valores booleanos misteriosos en la llamada (ej. `updateStatus(true)`) y se alinea con la regla de linter `avoid_positional_boolean_parameters`.
+
+**Ejemplos de Firmas y Parámetros:**
+
+```dart
+// ❌ Mal
+// Argumento único innecesariamente nombrado
+Future<void> execute({required CreateUserDto dto});
+
+// Múltiples argumentos posicionales (propenso a invertir el orden en la llamada)
+Future<User> updateUser(String id, String tenantId, UserDto data);
+
+// Booleano posicional (antipatrón: llamada críptica 'toggle(true)')
+void setNotificationsEnabled(bool enabled);
+
+// ✅ Bien
+// 1. Argumento único no-booleano: posicional
+Future<void> execute(CreateUserDto dto);
+
+// 2. Múltiples argumentos: nombrados con required
+Future<User> updateUser({
+  required String id,
+  required String tenantId,
+  required UserDto data,
+});
+
+// 3. Booleano (único o múltiple): siempre nombrado
+void setNotificationsEnabled({required bool isEnabled});
+```
+

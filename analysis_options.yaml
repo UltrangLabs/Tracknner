@@ -57,3 +57,18 @@ linter:
 
     # --- ORDERING ---
     directives_ordering: true
+
+    # --- Constructors ---
+    prefer_initializing_formals: true
+
+    # Exige la coma final en los parámetros para forzar al formateador a colocarlos en cascada (Dart 3.3+)
+    require_trailing_commas: true
+
+    # Prohíbe pasar booleanos posicionales, forzando a que sean nombrados para mayor legibilidad
+    avoid_positional_boolean_parameters: true
+
+    # Mantiene un orden estricto en la clase exigiendo que los constructores vayan siempre arriba
+    sort_constructors_first: false
+    
+    # Asegura que el constructor principal (sin nombre) vaya antes que los constructores nombrados (.fromJson, etc)
+    sort_unnamed_constructors_first: true
