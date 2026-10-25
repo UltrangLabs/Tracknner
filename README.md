@@ -1,6 +1,6 @@
 <!-- Plantilla base -->
 
-# [Nombre de tu Aplicación Flutter]
+# Tracknner
 
 Aplicación móvil multiplataforma desarrollada con **Flutter** y **Dart** bajo principios de Clean Architecture.
 
