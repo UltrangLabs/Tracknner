@@ -1,30 +1,30 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:running/main.dart';
+import 'package:running/shared/screens/dashboard_screen.dart';
+import 'package:running/shared/widgets/bottom_nav.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('DashboardScreen smoke test verifies navigation tabs', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byType(DashboardScreen), findsOneWidget);
+    expect(find.byType(BottomNav), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text('Inicio'), findsWidgets);
+    expect(find.text('Carrera'), findsWidgets);
+    expect(find.text('Resumen'), findsWidgets);
+    expect(find.text('Historia'), findsWidgets);
+    expect(find.text('Mascota'), findsWidgets);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Tap on Carrera tab
+    await tester.tap(find.byIcon(Icons.access_time_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sección de Carrera en desarrollo'), findsOneWidget);
   });
 }
