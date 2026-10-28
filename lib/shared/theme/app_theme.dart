@@ -33,3 +33,13 @@ class AppTheme {
     );
   }
 }
+
+// Navigation and UI colors
+const Color navActiveColor = primaryColor;
+const Color navInactiveColor = Color.fromRGBO(142, 142, 147, 1);
+const Color navBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
+const Color navBorderColor = Color.fromRGBO(230, 232, 236, 1);
+const Color transparentColor = Color.fromRGBO(0, 0, 0, 0);
+const Color surfaceBackgroundColor = Color.fromRGBO(248, 249, 250, 1);
+const Color textPrimaryColor = Color.fromRGBO(33, 33, 33, 1);
+const Color textSecondaryColor = Color.fromRGBO(117, 117, 117, 1);
