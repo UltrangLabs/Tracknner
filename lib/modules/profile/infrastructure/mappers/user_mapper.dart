@@ -10,7 +10,10 @@ class UserMapperImpl implements UserMapper {
   @override
   User fromDbToEntity(Unknown dbData) {
     if (dbData.isEmpty) {
-      throw CustomError.badRequest(payload: [], path: 'mapper');
+      throw CustomError.badRequest(
+        payload: [(message: "The data is Empty", path: "User mapper")],
+        path: 'mapper',
+      );
     }
 
     return User(

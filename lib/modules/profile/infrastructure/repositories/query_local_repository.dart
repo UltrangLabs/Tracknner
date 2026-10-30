@@ -1,4 +1,5 @@
 import '../../domain/datasources/query_user_datasource.dart';
+import '../../domain/dtos/in/looking_user_exist_dto.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/query_user_repository.dart';
 
@@ -20,5 +21,10 @@ class QueryLocalRepository implements QueryUserRepository {
   @override
   Future<bool> queryUserIsPremium(String userId) {
     return queryDatasource.queryUserIsPremium(userId);
+  }
+
+  @override
+  Future<User?> lookingForUserExist(LookingUserDto dto) {
+    return queryDatasource.lookingForUserExist(dto);
   }
 }
