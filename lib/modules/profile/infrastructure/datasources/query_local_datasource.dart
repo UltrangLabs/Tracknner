@@ -60,4 +60,13 @@ class QueryUserLocalDatasource implements QueryUserDatasource {
         ? null
         : _userMapper.fromDbToEntity(queryUser.first);
   }
+
+  @override
+  Future<User?> userAlreadyHaveAnAccount() async {
+    final queryUser = await _dbClient.query(_userNameTable, limit: 1);
+
+    return queryUser.isEmpty
+        ? null
+        : _userMapper.fromDbToEntity(queryUser.first);
+  }
 }

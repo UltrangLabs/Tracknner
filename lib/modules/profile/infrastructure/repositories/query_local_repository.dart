@@ -27,4 +27,9 @@ class QueryLocalRepository implements QueryUserRepository {
   Future<User?> lookingForUserExist(LookingUserDto dto) {
     return queryDatasource.lookingForUserExist(dto);
   }
+
+  @override
+  Future<User?> userAlreadyHaveAnAccount() {
+    return queryDatasource.userAlreadyHaveAnAccount();
+  }
 }

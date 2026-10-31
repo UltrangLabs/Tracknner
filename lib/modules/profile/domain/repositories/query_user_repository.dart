@@ -6,4 +6,5 @@ abstract class QueryUserRepository {
   Future<int> queryUserVirtualCoins(String userId);
   Future<bool> queryUserIsPremium(String userId);
   Future<User?> lookingForUserExist(LookingUserDto dto);
+  Future<User?> userAlreadyHaveAnAccount();
 }
