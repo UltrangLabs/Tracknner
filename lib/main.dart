@@ -14,6 +14,7 @@ void main() async {
   await initDatabaseDi();
   initProfileDi();
   initPetCoreDi();
+  initMissionsDi();
 
   runApp(const MyApp());
 }
