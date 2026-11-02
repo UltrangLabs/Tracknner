@@ -6,8 +6,9 @@ import 'pet_carousel_banner.dart';
 
 class UserForm extends StatefulWidget {
   final ValueChanged<String>? onUserCreated;
+  final ValueChanged<String>? onPetChosen;
 
-  const UserForm({super.key, this.onUserCreated});
+  const UserForm({super.key, this.onUserCreated, this.onPetChosen});
 
   @override
   State<UserForm> createState() => _UserFormState();
@@ -105,6 +106,7 @@ class _UserFormState extends State<UserForm> {
   void _onSubmit() {
     _nameFocusNode.unfocus();
     if (_formKey.currentState?.validate() ?? false) {
+      widget.onPetChosen?.call(_selectedPetImage);
       widget.onUserCreated?.call(_nameController.text.trim());
     }
   }

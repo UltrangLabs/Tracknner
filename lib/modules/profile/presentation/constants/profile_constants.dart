@@ -47,7 +47,6 @@ const kPetProgressDimensions = (
   levelBadgeHorizontalPadding: 12.0,
   levelBadgeVerticalPadding: 4.0,
   progressBarHeight: 8.0,
-  progressBarProgress: 0.68,
   feedButtonHorizontalPadding: 20.0,
   feedButtonVerticalPadding: 10.0,
   feedButtonBorderWidth: 1.5,
@@ -105,20 +104,27 @@ const kPetCarouselDimensions = (
 const kProfileStrings = (
   appName: 'Tracknner',
   appLogoPath: 'assets/icon/ico_tracknner_boceto.jpg',
-  coinsAmount: '1,250',
   companionSubtitle: 'TU COMPAÑERO DE CARRERA',
-  greetingTitle: '¡Sigue así, Alex!',
-  petImagePath: 'assets/imgs/pets/golden.jpg',
-  levelLabel: 'LVL 5',
   levelTitle: 'Corredor constante',
   xpTitle: 'XP',
-  xpValue: '680 / 1,000',
   feedButtonTitle: 'Alimentar',
   feedCost: '10',
   bulletSeparator: '•',
   dailyMissionTag: 'MISIÓN DIARIA',
-  dailyMissionTitle: 'Objetivo de hoy: Corre 15 minutos',
+  startRunLabel: 'Empezar Carrera',
 );
+
+String greetingFor(String userName) => '¡Sigue así, $userName!';
+
+String levelLabelFor(int level) => 'LVL $level';
+
+String experienceLabel({required int experience, required int goal}) {
+  return '$experience / $goal';
+}
+
+String missionTitleFor(int targetDurationSeconds) {
+  return 'Objetivo de hoy: Corre ${targetDurationSeconds ~/ 60} minutos';
+}
 
 // User form copy
 const kUserFormStrings = (

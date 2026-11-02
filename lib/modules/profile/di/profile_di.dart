@@ -2,6 +2,7 @@ import '../../../core/di/injection_container.dart';
 import '../../../core/infrastructure/adapters/validator_adapter.dart';
 import '../../../core/infrastructure/database/interfaces/local_db_client.dart';
 
+import '../../game_engine/game_engine_module.dart';
 import '../application/use_cases/create_user_use_case.dart';
 import '../application/use_cases/get_user_already_have_an_account_use_case.dart';
 import '../application/validators/schemas/looking_user_schema.dart';
@@ -76,6 +77,8 @@ void initProfileDi() {
     () => ProfileController(
       getUserAction: sl<ExecuteGetUserAlreadyHaveAnAccountUseCase>(),
       createUserAction: sl<ExecuteCreateUserUseCase>(),
+      ensureUserPetAction: sl<ExecuteEnsureUserPetUseCase>(),
+      getDailyMissionAction: sl<ExecuteGetDailyMissionUseCase>(),
     ),
   );
 }
