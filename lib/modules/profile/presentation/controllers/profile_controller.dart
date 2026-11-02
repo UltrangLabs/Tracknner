@@ -55,14 +55,12 @@ class ProfileController extends BaseController<User> {
   }
 
   Future<void> _loadCompanionData(User user) async {
-    _pet = await _ensureUserPetAction(
-      EnsureUserPetDto(
-        userId: user.id,
-        name: _chosenPet.name,
-        breed: _chosenPet.breed,
-        imageAssetName: _chosenPet.imagePath,
-      ),
-    );
+    _pet = await _ensureUserPetAction({
+      'userId': user.id.value,
+      'name': _chosenPet.name,
+      'breed': _chosenPet.breed,
+      'imageAssetName': _chosenPet.imagePath,
+    });
     _mission = await _getDailyMissionAction(const NoParams());
   }
 

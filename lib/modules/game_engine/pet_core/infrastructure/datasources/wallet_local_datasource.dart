@@ -1,16 +1,17 @@
 import '../../../../../core/domain/errors/custom_error.dart';
 import '../../../../../core/domain/types/app_uuid.dart';
 import '../../../../../core/infrastructure/database/interfaces/local_db_client.dart';
-import '../../domain/repositories/wallet_repository.dart';
+import '../../domain/datasources/wallet_datasource.dart';
+import '../../domain/dtos/in/save_coins_dto.dart';
 
-class WalletLocalRepository implements WalletRepository {
+class WalletLocalDatasource implements WalletDatasource {
   static const String _tableName = 'User';
   static const String _errorPath =
-      'modules.game_engine.pet_core.wallet_local_repository';
+      'modules.game_engine.pet_core.wallet_local_datasource';
 
   final LocalDbClient _dbClient;
 
-  WalletLocalRepository({required this._dbClient});
+  WalletLocalDatasource({required this._dbClient});
 
   @override
   Future<int> getCoins(AppUuid userId) async {
@@ -18,6 +19,7 @@ class WalletLocalRepository implements WalletRepository {
       _tableName,
       columns: ['virtualCoins'],
       conditions: (where: 'userId = ?', whereArgs: [userId.value]),
+      limit: 1,
     );
 
     if (rows.isEmpty) {
@@ -28,11 +30,11 @@ class WalletLocalRepository implements WalletRepository {
   }
 
   @override
-  Future<void> saveCoins({required AppUuid userId, required int coins}) async {
+  Future<void> saveCoins(SaveCoinsDto dto) async {
     final updatedRows = await _dbClient.update(
       _tableName,
-      {'virtualCoins': coins},
-      conditions: (where: 'userId = ?', whereArgs: [userId.value]),
+      {'virtualCoins': dto.coins},
+      conditions: (where: 'userId = ?', whereArgs: [dto.userId.value]),
     );
 
     if (updatedRows == 0) {

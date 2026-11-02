@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:running/core/di/injection_container.dart';
 import 'package:running/core/domain/types/app_uuid.dart';
+import 'package:running/core/domain/types/unknown_type.dart';
 import 'package:running/main.dart';
 import 'package:running/modules/game_engine/game_engine_module.dart';
 import 'package:running/modules/profile/domain/entities/user_entity.dart';
@@ -27,12 +28,12 @@ void main() {
           isPremium: false,
         ),
         createUserAction: (_) async {},
-        ensureUserPetAction: (dto) async => Pet(
+        ensureUserPetAction: (Unknown rawData) async => Pet(
           id: AppUuid('pet-1'),
-          userId: dto.userId,
-          name: dto.name,
-          breed: dto.breed,
-          imageAssetName: dto.imageAssetName,
+          userId: AppUuid(rawData['userId'].toString()),
+          name: rawData['name'].toString(),
+          breed: rawData['breed'].toString(),
+          imageAssetName: rawData['imageAssetName'].toString(),
           level: 1,
           experience: 0,
         ),

@@ -48,15 +48,18 @@ void main() {
     expect(firstRun.mission?.targetDurationSeconds, 900);
 
     final userId = firstRun.data!.id;
-    await sl<ExecuteAddCoinsUseCase>()(
-      UserAmountDto(userId: userId, amount: 40),
-    );
-    await sl<ExecuteDeductCoinsUseCase>()(
-      DeductCoinsDto(userId: userId, amount: 15),
-    );
-    await sl<ExecuteAddExperienceUseCase>()(
-      UserAmountDto(userId: userId, amount: 130),
-    );
+    await sl<ExecuteAddCoinsUseCase>(instanceName: addCoinsActionName)({
+      'userId': userId.value,
+      'amount': 40,
+    });
+    await sl<ExecuteDeductCoinsUseCase>(instanceName: deductCoinsActionName)({
+      'userId': userId.value,
+      'amount': 15,
+    });
+    await sl<ExecuteAddExperienceUseCase>()({
+      'userId': userId.value,
+      'amount': 130,
+    });
 
     final reopened = sl<ProfileController>();
     await reopened.checkExistingAccount();

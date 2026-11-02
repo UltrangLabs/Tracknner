@@ -1,28 +1,38 @@
-import '../../../../../core/domain/errors/custom_error.dart';
+import '../../../../../core/domain/types/unknown_type.dart';
 import '../../../../../core/domain/use_cases/interfaces/structure_use_case.dart';
-import '../../domain/dtos/in/user_amount_dto.dart';
 import '../../domain/repositories/wallet_repository.dart';
+import '../dtos/in/save_coins_dto.dart';
+import '../dtos/in/user_amount_dto.dart';
 
-typedef ExecuteAddCoinsUseCase = Future<int> Function(UserAmountDto dto);
+typedef ExecuteAddCoinsUseCase = Future<int> Function(Unknown rawData);
 
-class AddCoinsUseCase implements UseCaseStructure<int, UserAmountDto> {
+class AddCoinsUseCase implements UseCaseStructure<int, Unknown> {
   final WalletRepository _walletRepository;
+  final ValidatorUserAmountDto _userAmountValidator;
+  final ValidatorSaveCoinsDto _saveCoinsValidator;
 
-  AddCoinsUseCase({required this._walletRepository});
+  AddCoinsUseCase({
+    required this._walletRepository,
+    required this._userAmountValidator,
+    required this._saveCoinsValidator,
+  });
 
   @override
-  Future<int> execute(UserAmountDto dto) async {
-    if (dto.amount <= 0) {
-      throw CustomError.badRequest(
-        payload: [(message: 'Amount must be positive', path: 'amount')],
-        path: 'modules.game_engine.pet_core.add_coins',
-      );
-    }
+  Future<int> execute(Unknown rawData) async {
+    final userAmountDto = UserAmountDtoImpl.create(
+      rawData: rawData,
+      validator: _userAmountValidator,
+    );
 
-    final balance = await _walletRepository.getCoins(dto.userId);
-    final newBalance = balance + dto.amount;
+    final balance = await _walletRepository.getCoins(userAmountDto.userId);
+    final newBalance = balance + userAmountDto.amount;
 
-    await _walletRepository.saveCoins(userId: dto.userId, coins: newBalance);
+    final saveCoinsDto = SaveCoinsDtoImpl.create(
+      rawData: {'userId': userAmountDto.userId.value, 'coins': newBalance},
+      validator: _saveCoinsValidator,
+    );
+
+    await _walletRepository.saveCoins(saveCoinsDto);
 
     return newBalance;
   }

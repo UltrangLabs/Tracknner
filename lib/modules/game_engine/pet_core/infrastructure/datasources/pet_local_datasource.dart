@@ -2,11 +2,12 @@ import '../../../../../core/domain/errors/custom_error.dart';
 import '../../../../../core/domain/types/app_uuid.dart';
 import '../../../../../core/infrastructure/adapters/uuid_adapter.dart';
 import '../../../../../core/infrastructure/database/interfaces/local_db_client.dart';
+import '../../domain/datasources/pet_datasource.dart';
 import '../../domain/dtos/in/ensure_user_pet_dto.dart';
+import '../../domain/dtos/in/save_pet_progress_dto.dart';
 import '../../domain/entities/pet.dart';
-import '../../domain/repositories/pet_repository.dart';
 
-class PetLocalRepository implements PetRepository {
+class PetLocalDatasource implements PetDatasource {
   static const String _tableName = 'Pet';
   static const int _initialLevel = 1;
   static const int _initialExperience = 0;
@@ -14,7 +15,7 @@ class PetLocalRepository implements PetRepository {
   final LocalDbClient _dbClient;
   final GenerateUuIdV4 _generateUuIdV4;
 
-  PetLocalRepository({
+  PetLocalDatasource({
     required this._dbClient,
     this._generateUuIdV4 = generateUuidV4,
   });
@@ -24,6 +25,7 @@ class PetLocalRepository implements PetRepository {
     final rows = await _dbClient.query(
       _tableName,
       conditions: (where: 'userId = ?', whereArgs: [userId.value]),
+      limit: 1,
     );
 
     return rows.isEmpty ? null : _toEntity(rows.first);
@@ -55,21 +57,17 @@ class PetLocalRepository implements PetRepository {
   }
 
   @override
-  Future<void> saveProgress({
-    required AppUuid petId,
-    required int level,
-    required int experience,
-  }) async {
+  Future<void> saveProgress(SavePetProgressDto dto) async {
     final updatedRows = await _dbClient.update(
       _tableName,
-      {'currentLevel': level, 'currentExperience': experience},
-      conditions: (where: 'petId = ?', whereArgs: [petId.value]),
+      {'currentLevel': dto.level, 'currentExperience': dto.experience},
+      conditions: (where: 'petId = ?', whereArgs: [dto.petId.value]),
     );
 
     if (updatedRows == 0) {
       throw CustomError.notFound(
         message: 'Pet not found',
-        path: 'modules.game_engine.pet_core.pet_local_repository',
+        path: 'modules.game_engine.pet_core.pet_local_datasource',
       );
     }
   }

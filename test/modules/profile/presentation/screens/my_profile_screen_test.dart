@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:running/core/di/injection_container.dart';
 import 'package:running/core/domain/types/app_uuid.dart';
+import 'package:running/core/domain/types/unknown_type.dart';
 import 'package:running/modules/game_engine/game_engine_module.dart';
 import 'package:running/modules/profile/domain/entities/user_entity.dart';
 import 'package:running/modules/profile/presentation/controllers/profile_controller.dart';
@@ -18,12 +19,12 @@ void main() {
     isPremium: false,
   );
 
-  Pet petFrom(EnsureUserPetDto dto) => Pet(
+  Pet petFrom(Unknown rawData) => Pet(
     id: AppUuid('pet-1'),
-    userId: dto.userId,
-    name: dto.name,
-    breed: dto.breed,
-    imageAssetName: dto.imageAssetName,
+    userId: AppUuid(rawData['userId'].toString()),
+    name: rawData['name'].toString(),
+    breed: rawData['breed'].toString(),
+    imageAssetName: rawData['imageAssetName'].toString(),
     level: 2,
     experience: 30,
   );
@@ -34,7 +35,7 @@ void main() {
       () => ProfileController(
         getUserAction: (_) async => user,
         createUserAction: (_) async {},
-        ensureUserPetAction: (dto) async => petFrom(dto),
+        ensureUserPetAction: (rawData) async => petFrom(rawData),
         getDailyMissionAction: (_) async =>
             const DailyMission(targetDurationSeconds: 900),
       ),
