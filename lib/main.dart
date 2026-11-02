@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'core/infrastructure/adapters/logger_adapter.dart' as logger_adapter;
 import 'core/infrastructure/database/di/database_di.dart';
 import 'core/presentation/routers/app_router.dart';
+import 'modules/game_engine/game_engine_module.dart';
 import 'modules/profile/di/profile_di.dart';
 import 'shared/theme/app_theme.dart';
 
@@ -12,6 +13,8 @@ void main() async {
   logger_adapter.logCyanBold('Starting application...');
   await initDatabaseDi();
   initProfileDi();
+  initPetCoreDi();
+  initMissionsDi();
 
   runApp(const MyApp());
 }

@@ -23,6 +23,7 @@ class UserMapperImpl implements UserMapper {
 
     return User(
       id: AppUuid(dbData['userId'] as String),
+      name: dbData['name'] as String,
       virtualCoins: dbData['virtualCoins'] as int,
       currentStreak: dbData['currentStreak'] as int,
       highestStreak: dbData['highestStreak'] as int,
@@ -34,6 +35,7 @@ class UserMapperImpl implements UserMapper {
   Unknown fromEntityToDb(User user) {
     return {
       'userId': user.id.value,
+      'name': user.name,
       'virtualCoins': user.virtualCoins,
       'currentStreak': user.currentStreak,
       'highestStreak': user.highestStreak,

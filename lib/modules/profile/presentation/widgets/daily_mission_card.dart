@@ -51,7 +51,9 @@ class DailyMissionCard extends StatelessWidget {
     color: textPrimaryColor,
   );
 
-  const DailyMissionCard({super.key});
+  final int targetDurationSeconds;
+
+  const DailyMissionCard({super.key, required this.targetDurationSeconds});
 
   @override
   Widget build(BuildContext context) {
@@ -76,12 +78,15 @@ class DailyMissionCard extends StatelessWidget {
               children: [
                 Text(kProfileStrings.dailyMissionTag, style: _tagStyle),
                 SizedBox(height: kProfileLayoutDimensions.spacingMicro),
-                Text(kProfileStrings.dailyMissionTitle, style: _titleStyle),
+                Text(
+                  missionTitleFor(targetDurationSeconds),
+                  style: _titleStyle,
+                ),
               ],
             ),
           ),
           Icon(
-            Icons.check_circle_rounded,
+            Icons.flag_rounded,
             color: primaryColor,
             size: kDailyMissionCardDimensions.checkIconSize,
           ),
