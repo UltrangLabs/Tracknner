@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/di/injection_container.dart';
+import '../../../../core/presentation/routers/constants/routes_path_constant.dart';
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/window_modal.dart';
+import '../../../game_engine/game_engine_module.dart';
+import '../../domain/entities/user_entity.dart';
 import '../constants/profile_constants.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/daily_mission_card.dart';
@@ -52,7 +56,8 @@ class _ProfileBodyState extends State<_ProfileBody> {
   Widget build(BuildContext context) {
     final controller = context.watch<ProfileController>();
 
-    if (controller.isLoading) {
+    // Evita abrir el formulario antes de saber si la cuenta ya existe.
+    if (controller.isLoading || !controller.hasCheckedAccount) {
       return const Center(
         child: CircularProgressIndicator(color: primaryColor),
       );
@@ -62,12 +67,16 @@ class _ProfileBodyState extends State<_ProfileBody> {
       return _ProfileError(message: controller.errorMessage!);
     }
 
-    if (controller.data == null) {
+    final user = controller.data;
+    final pet = controller.pet;
+    final mission = controller.mission;
+
+    if (user == null || pet == null || mission == null) {
       _scheduleUserFormModal(controller);
       return const SizedBox.expand();
     }
 
-    return const _ProfileContent();
+    return _ProfileContent(user: user, pet: pet, mission: mission);
   }
 
   void _scheduleUserFormModal(ProfileController controller) {
@@ -87,6 +96,7 @@ class _ProfileBodyState extends State<_ProfileBody> {
         barrierDismissible: false,
         child: SingleChildScrollView(
           child: UserForm(
+            onPetChosen: controller.choosePet,
             onUserCreated: (String userName) =>
                 _onUserCreated(controller: controller, userName: userName),
           ),
@@ -130,7 +140,15 @@ class _ProfileContent extends StatelessWidget {
     vertical: kProfileLayoutDimensions.screenVerticalPadding,
   );
 
-  const _ProfileContent();
+  final User user;
+  final Pet pet;
+  final DailyMission mission;
+
+  const _ProfileContent({
+    required this.user,
+    required this.pet,
+    required this.mission,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -138,15 +156,23 @@ class _ProfileContent extends StatelessWidget {
       padding: _screenPadding,
       child: Column(
         children: [
-          const ProfileTopBar(),
+          ProfileTopBar(coins: user.virtualCoins),
           SizedBox(height: kProfileLayoutDimensions.spacingMedium),
-          const _ProfileHeader(),
+          _ProfileHeader(userName: user.name),
           SizedBox(height: kProfileLayoutDimensions.spacingDefault),
-          const PetAvatar(),
+          PetAvatar(imagePath: pet.imageAssetName),
           SizedBox(height: kProfileLayoutDimensions.spacingSmall),
-          const PetProgressSection(),
+          PetProgressSection(
+            level: pet.level,
+            experience: pet.experience,
+            requiredExperience: requiredExperienceFor(pet.level),
+          ),
           SizedBox(height: kProfileLayoutDimensions.spacingLarge),
-          const DailyMissionCard(),
+          DailyMissionCard(
+            targetDurationSeconds: mission.targetDurationSeconds,
+          ),
+          SizedBox(height: kProfileLayoutDimensions.spacingCompact),
+          const _StartRunButton(),
           SizedBox(height: kProfileLayoutDimensions.spacingCompact),
         ],
       ),
@@ -168,7 +194,9 @@ class _ProfileHeader extends StatelessWidget {
     color: textPrimaryColor,
   );
 
-  const _ProfileHeader();
+  final String userName;
+
+  const _ProfileHeader({required this.userName});
 
   @override
   Widget build(BuildContext context) {
@@ -181,11 +209,39 @@ class _ProfileHeader extends StatelessWidget {
         ),
         SizedBox(height: kProfileLayoutDimensions.spacingTiny),
         Text(
-          kProfileStrings.greetingTitle,
+          greetingFor(userName),
           style: _titleStyle,
           textAlign: TextAlign.center,
         ),
       ],
+    );
+  }
+}
+
+class _StartRunButton extends StatelessWidget {
+  static const TextStyle _labelStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.bold,
+  );
+
+  const _StartRunButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          foregroundColor: textPrimaryColor,
+          padding: EdgeInsets.symmetric(
+            vertical: kProfileLayoutDimensions.spacingCompact,
+          ),
+        ),
+        icon: const Icon(Icons.directions_run_rounded),
+        label: Text(kProfileStrings.startRunLabel, style: _labelStyle),
+        onPressed: () => context.go(kRoutesPath.carrera),
+      ),
     );
   }
 }

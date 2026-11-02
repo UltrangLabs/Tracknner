@@ -43,7 +43,9 @@ class ProfileTopBar extends StatelessWidget {
     border: Border.fromBorderSide(BorderSide(color: navBorderColor)),
   );
 
-  const ProfileTopBar({super.key});
+  final int coins;
+
+  const ProfileTopBar({super.key, required this.coins});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,7 @@ class ProfileTopBar extends StatelessWidget {
                 size: _coinIconSize,
               ),
               SizedBox(width: kProfileLayoutDimensions.spacingInline),
-              Text(kProfileStrings.coinsAmount, style: _coinTextStyle),
+              Text('$coins', style: _coinTextStyle),
             ],
           ),
         ),

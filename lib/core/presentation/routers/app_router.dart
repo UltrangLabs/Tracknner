@@ -1,23 +1,15 @@
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '../../../modules/profile/presentation/controllers/profile_controller.dart';
 import '../../../modules/profile/presentation/screens/my_profile_screen.dart';
 import '../../../shared/layout/main_layout_screen.dart';
 import '../../../shared/screens/dashboard_screen.dart';
-import '../../di/injection_container.dart';
 import 'constants/routes_path_constant.dart';
 
 final _dashboardBranch = StatefulShellBranch(
   routes: [
     GoRoute(
       path: kRoutesPath.dashboard,
-      builder: (context, state) {
-        return ChangeNotifierProvider(
-          create: (_) => sl<ProfileController>()..checkExistingAccount(),
-          child: const MyProfileScreen(),
-        );
-      },
+      builder: (context, state) => const MyProfileScreen(),
     ),
   ],
 );

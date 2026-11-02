@@ -4,15 +4,27 @@ import '../../../../shared/theme/app_theme.dart';
 import '../constants/profile_constants.dart';
 
 class PetProgressSection extends StatelessWidget {
-  const PetProgressSection({super.key});
+  final int level;
+  final int experience;
+  final int requiredExperience;
+
+  const PetProgressSection({
+    super.key,
+    required this.level,
+    required this.experience,
+    required this.requiredExperience,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const _LevelBadge(),
+        _LevelBadge(level: level),
         SizedBox(height: kProfileLayoutDimensions.spacingCompact),
-        const _XpProgressBar(),
+        _XpProgressBar(
+          experience: experience,
+          requiredExperience: requiredExperience,
+        ),
         SizedBox(height: kProfileLayoutDimensions.spacingDefault),
         const _FeedActionButton(),
       ],
@@ -47,7 +59,9 @@ class _LevelBadge extends StatelessWidget {
     color: textPrimaryColor,
   );
 
-  const _LevelBadge();
+  final int level;
+
+  const _LevelBadge({required this.level});
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +71,12 @@ class _LevelBadge extends StatelessWidget {
         Container(
           padding: _badgePadding,
           decoration: _badgeDecoration,
-          child: Text(kProfileStrings.levelLabel, style: _levelTextStyle),
+          child: Text(levelLabelFor(level), style: _levelTextStyle),
         ),
         SizedBox(width: kProfileLayoutDimensions.spacingTiny),
-        Text(kProfileStrings.levelTitle, style: _labelTextStyle),
+        Flexible(
+          child: Text(kProfileStrings.levelTitle, style: _labelTextStyle),
+        ),
       ],
     );
   }
@@ -68,8 +84,6 @@ class _LevelBadge extends StatelessWidget {
 
 class _XpProgressBar extends StatelessWidget {
   static final double _barHeight = kPetProgressDimensions.progressBarHeight;
-  static final double _progressValue =
-      kPetProgressDimensions.progressBarProgress;
 
   static const BorderRadius _barRadius = BorderRadius.all(Radius.circular(6.0));
 
@@ -85,7 +99,13 @@ class _XpProgressBar extends StatelessWidget {
     color: textSecondaryColor,
   );
 
-  const _XpProgressBar();
+  final int experience;
+  final int requiredExperience;
+
+  const _XpProgressBar({
+    required this.experience,
+    required this.requiredExperience,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -95,14 +115,17 @@ class _XpProgressBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(kProfileStrings.xpTitle, style: _xpTitleStyle),
-            Text(kProfileStrings.xpValue, style: _xpValueStyle),
+            Text(
+              experienceLabel(experience: experience, goal: requiredExperience),
+              style: _xpValueStyle,
+            ),
           ],
         ),
         SizedBox(height: kProfileLayoutDimensions.spacingTiny),
         ClipRRect(
           borderRadius: _barRadius,
           child: LinearProgressIndicator(
-            value: _progressValue,
+            value: experience / requiredExperience,
             minHeight: _barHeight,
             backgroundColor: progressBarBackgroundColor,
             valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),

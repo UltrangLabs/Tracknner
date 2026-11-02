@@ -23,7 +23,9 @@ class PetAvatar extends StatelessWidget {
     ),
   );
 
-  const PetAvatar({super.key});
+  final String imagePath;
+
+  const PetAvatar({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class PetAvatar extends StatelessWidget {
             ClipRRect(
               borderRadius: _imageRadius,
               child: Image.asset(
-                kProfileStrings.petImagePath,
+                imagePath,
                 width: _petImageWidth,
                 height: _petImageHeight,
                 fit: BoxFit.cover,
