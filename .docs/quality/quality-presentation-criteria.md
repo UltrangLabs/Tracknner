@@ -146,8 +146,8 @@ Cuando una vista requiere gestión de estado local, animaciones, hardware o capt
   1. Depende directamente del `BuildContext` (ej. `Theme.of(context)`, `MediaQuery.of(context)`).
   2. Requiere enlazar callbacks o referencias vivas de la instancia (ej. `onPressed: _onPressed`).
 
-### 2.3. Estructura Interna del `State`
-El cuerpo de la clase `State` debe seguir un orden predecible y estricto:
+### 2.3. Estructura Interna del `State` y Constructores
+El cuerpo de la clase `State` y sus widgets asociados debe seguir un orden predecible y estricto:
 1. **Atributos de la clase:**
    - Controladores (`TextEditingController`, `FocusNode`).
    - Propiedades de diseño estáticas extraídas (fuera de `build`).
@@ -158,6 +158,10 @@ El cuerpo de la clase `State` debe seguir un orden predecible y estricto:
 3. **Método `build(BuildContext context)`**.
 4. **Métodos privados y Callbacks de eventos:**
    - Declarados en el orden exacto en el que son referenciados dentro del `build()`.
+5. **Constructores:**
+   - Usar inicialización formal en parámetros (`prefer_initializing_formals: true`).
+   - El constructor principal sin nombre siempre debe ir antes que cualquier constructor nombrado (`sort_unnamed_constructors_first: true`).
+   - Parámetros booleanos siempre nombrados (`avoid_positional_boolean_parameters: true`).
 
 ---
 
@@ -294,6 +298,7 @@ presentation/
 - **Widgets exclusivos:** Si un widget solo lo usa una pantalla y tiene menos de 250 líneas, permanece como clase privada (`_NombreWidget`) en el mismo archivo bajo la *Stepdown Rule*.
 - **Widgets de submódulo:** Si el archivo supera las 250 líneas o el widget es compartido por varias pantallas de la misma feature, se ubica en `presentation/widgets/`.
 - **Widgets globales:** Si el componente es transversal a toda la aplicación (ej. botones primarios corporativos, loaders, app bar global), se ubica en `lib/shared/widgets/`.
+- **Imports Relativos:** Utilizar importaciones relativas dentro del proyecto (`prefer_relative_imports: true`) ordenadas (`directives_ordering: true`).
 
 ---
 
@@ -307,5 +312,8 @@ Antes de aprobar un cambio en la capa de presentación, verificar:
 - [ ] ¿`super.dispose()` está ubicado al final del método?
 - [ ] ¿Las propiedades estáticas de diseño (bordes, decoraciones fijas) están fuera del método `build()`?
 - [ ] ¿Todos los constructores de widgets usan `const` cuando es posible?
+- [ ] ¿Se utiliza inicialización formal en parámetros (`prefer_initializing_formals`) y constructor sin nombre arriba (`sort_unnamed_constructors_first`)?
+- [ ] ¿Los parámetros booleanos son nombrados con `required` (`avoid_positional_boolean_parameters`)?
 - [ ] ¿Se utiliza `require_trailing_commas` en todas las listas de parámetros y árboles de widgets?
+- [ ] ¿Se usan imports relativos (`prefer_relative_imports`) y ordenados (`directives_ordering`)?
 - [ ] ¿No se utiliza `print` en producción (usar logs si es necesario)?
