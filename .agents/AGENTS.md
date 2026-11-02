@@ -40,11 +40,11 @@ lib/
 
 ### 1.2. Reglas de Capas por Módulo / Submódulo
 Cada módulo o submódulo sigue una estructura de capas estricta:
-1. **`domain/`**: Entidades, contratos de repositorios (`*Repository`), DTOs de dominio y reglas de negocio puras. **Sin dependencias externas ni de Flutter.**
-2. **`application/`**: Casos de uso (`*UseCase`), DTOs de entrada (`*DtoImpl`) y orquestación de la lógica de negocio.
-3. **`infrastructure/`**: Implementación de repositorios, datasources (locales o remotos), mappers (`*Mapper`) y adaptadores.
-4. **`presentation/`**: Controladores de estado (BLoC / Cubit / Riverpod / Notifiers), pantallas (`*Screen`), vistas y widgets propios del módulo.
-5. **`di/`**: Inyección de dependencias específica del módulo o submódulo.
+1. **`domain/`**: Entidades, contratos de repositorios (`*Repository`), interfaces de fuentes de datos (`*Datasource`), contratos de DTOs (`abstract interface class *Dto`) y reglas de negocio puras. **Sin dependencias externas ni de Flutter.**
+2. **`application/`**: Casos de uso (`*UseCase`), implementaciones de DTOs (`*DtoImpl` con método estático `.create({rawData, validator})`), esquemas de validación con `LucidValidator` y orquestación de la lógica de negocio.
+3. **`infrastructure/`**: Implementaciones de repositorios (`*RepositoryImpl`), implementaciones de datasources locales o remotos (`*LocalDatasource`, `*RemoteDatasource`), mappers (`*Mapper`) y adaptadores externos.
+4. **`presentation/`**: Controladores de estado (BLoC / Cubit / Riverpod / Notifiers / BaseController), pantallas (`*Screen`), vistas y widgets propios del módulo.
+5. **`di/`**: Inyección de dependencias específica del módulo o submódulo (`init*Di()`) registrando DB, esquemas, validadores, datasources, repositorios, use cases y actions/controllers.
 6. **`*_module.dart`**: Archivo de fachada que define la **API pública** del macro-dominio. Ningún módulo externo debe acceder a detalles privados internos de otro módulo saltándose esta API.
 
 ---
@@ -70,9 +70,10 @@ Todo error, fallo de infraestructura o validación de negocio debe modelarse y p
 | `CustomError.internalServer` | Error grave no controlado / inesperado | `message: String`, `path: String = "desconocido"` |
 | `CustomError.serviceUnavailable` | Fallo de red temporal o servicio caído | `message: String`, `path: String = "desconocido"` |
 
-### 2.2. Reglas al Crear Errores
+### 2.2. Reglas al Crear Errores y Validaciones
 - Siempre especificar el parámetro `path` indicando la procedencia del error (ej. `'modules.profile.create_user'`, `'database.history.query'`).
 - Para validaciones, utilizar `FormattedErrorResponse = ({String message, String path})`.
+- **Seguridad en Validaciones de IDs:** En los esquemas de validación de identificadores internos (`userId`, `petId`, etc.), evitar mensajes explícitos que expongan detalles de arquitectura interna o cómo se manipulan los IDs. Utilizar mensajes genéricos y seguros como `'Parámetro inválido'`.
 
 ```dart
 // ❌ INCORRECTO
@@ -94,21 +95,21 @@ El proyecto cuenta con reglas de análisis muy estrictas que rompen el build si 
 
 ### 3.1. Tipado Fuerte y Seguridad
 - **`strict-casts: true`**, **`strict-inference: true`**, **`strict-raw-types: true`**.
-- **`avoid_dynamic_calls: error`**: Prohibido el uso de `dynamic`. Si un dato es de tipo desconocido, utilizar `Unknown` o `Object?` con validación explícita.
+- **`avoid_dynamic_calls: error`**: Prohibido el uso de `dynamic`. Si un dato es de tipo desconocido, utilizar `Unknown` (`Map<String, dynamic>`) u `Object?` con validación explícita.
 - **`always_declare_return_types: true` (y error)**: Toda función, método y getter debe tipar explícitamente su retorno (ej. `Future<void>`, `Stream<Activity>`, `int`).
 
 ### 3.2. Inmutabilidad y Constructores
 - **`prefer_const_constructors: error`** y **`prefer_const_declarations: error`**: Todo widget u objeto inmutable debe usar `const`.
 - **`prefer_final_locals: true`** y **`prefer_final_in_for_each: true`**: Prohibido usar `var` para variables reasignables innecesarias. Usar `final` siempre.
-- **`prefer_initializing_formals: true`**: Inicializar campos en el constructor (`this.field`).
-- **`sort_unnamed_constructors_first: true`**: El constructor principal sin nombre debe ir siempre antes que los constructores nombrados (`.fromJson`, `.create`, etc.).
+- **`prefer_initializing_formals: true`**: Inicializar campos directamente en los parámetros formales del constructor (`this.campo` o `this._campo`).
+- **`sort_unnamed_constructors_first: true`**: El constructor principal sin nombre debe ubicarse siempre antes que los constructores nombrados (`.fromJson`, `.create`, etc.).
 
 ### 3.3. Estilo, Formato y Estructura
-- **`curly_braces_in_flow_control_structures: true`**: Obligatorio el uso de llaves `{}` en todas las estructuras de control (`if`, `else`, `for`, `while`), incluso si son de una sola línea.
-- **`require_trailing_commas: true`**: Toda lista de parámetros, colección o árbol de widgets multilínea **debe terminar con una coma final (`,`)**.
-- **`directives_ordering: true`**: Orden estricto en imports (Dart SDK -> Paquetes -> Proyecto).
-- **`prefer_relative_imports: true`**: Dentro del proyecto se deben preferir imports relativos para mantener la modularidad.
-- **`avoid_classes_with_only_static_members: true`**: No crear clases utilitarias de puros miembros estáticos. Usar funciones top-level o extensiones según corresponda en Dart.
+- **`curly_braces_in_flow_control_structures: true` (y error)**: Obligatorio el uso de llaves `{}` en todas las estructuras de control (`if`, `else`, `for`, `while`), incluso si son de una sola línea.
+- **`require_trailing_commas: true`**: Toda lista de parámetros, colección o árbol de widgets multilínea **debe terminar con una coma final (`,`)** para forzar el formateo en cascada limpio.
+- **`directives_ordering: true`**: Orden estricto en imports (Dart SDK -> Paquetes externos -> Proyecto).
+- **`prefer_relative_imports: true`**: Dentro de `lib/`, se deben usar importaciones relativas para mantener la modularidad y cohesión interna.
+- **`avoid_classes_with_only_static_members: true` (y error)**: No crear clases utilitarias de puros miembros estáticos. Usar funciones top-level o extensiones según corresponda en Dart.
 - **`avoid_print: true`**: Prohibido usar `print()`. Utilizar el sistema de logs configurado.
 
 ---
@@ -118,10 +119,11 @@ El proyecto cuenta con reglas de análisis muy estrictas que rompen el build si 
 Siguiendo la norma de `quality-criteria.md`:
 
 1. **Parámetro Único (Posicional):**
-   - Si una función o método recibe **exactamente un parámetro** que no sea booleano (ej. un DTO de entrada en un Caso de Uso), debe ser **posicional**.
+   - Si una función o método recibe **exactamente un parámetro** que no sea booleano (ej. un DTO de entrada en un Caso de Uso o Datasource), debe ser **posicional**.
    ```dart
    // ✅ Correcto
    Future<void> execute(CreateUserDto dto);
+   Future<void> saveProgress(SavePetProgressDto dto);
    ```
 2. **Múltiples Parámetros (Nombrados):**
    - Si la función recibe **2 o más parámetros**, deben ser **nombrados con `required`** para prevenir confusiones de orden en los sitios de llamada.
@@ -148,6 +150,9 @@ Siguiendo la norma de `quality-criteria.md`:
 
 - **Archivos y Directorios:** Estrictamente `snake_case` (ej. `create_user_use_case.dart`, `custom_error.dart`).
 - **Clases, Mixins y Enums:** `PascalCase` (ej. `CreateUserUseCase`, `ActivityHistoryScreen`).
+- **Repositorios y Datasources:**
+  - Las implementaciones de repositorios se nombran como `*RepositoryImpl` (ej. `PetRepositoryImpl`), **no** como locales.
+  - Solo los datasources llevan el sufijo `Local` o `Remote` según la procedencia del dato (ej. `PetLocalDatasource`).
 - **Variables, Métodos y Constantes:** `lowerCamelCase` (ej. `maxRetries = 3;`, `loadUserData()`). **En Dart las constantes NO van en UPPER_SNAKE_CASE.**
 - **Booleanos:** Prefijos afirmativos (`isValid`, `hasPermission`, `isLoading`).
 - **Privacidad:** Anteponer guion bajo `_` para variables, clases o métodos privados del archivo.
@@ -166,6 +171,7 @@ Siguiendo la norma de `quality-criteria.md`:
 
 Antes de dar por finalizada cualquier tarea en el código:
 1. **Respetar la Arquitectura:** Ubicar cada archivo en el módulo y capa correspondiente (`domain`, `application`, `infrastructure`, `presentation`).
-2. **Cumplir con `CustomError`:** Nunca capturar y ocultar errores ni lanzar excepciones genéricas.
-3. **Verificar el Formato y Linter:** Comprobar que no se violen las reglas de `analysis_options.yaml` (tipado de retornos, comas finales, sin `dynamic`, imports correctos).
-4. **Preservar la Documentación:** No alterar comentarios ni documentaciones existentes a menos que el usuario lo solicite.
+2. **DTOs y Esquemas:** Al definir entradas, modelar la interfaz en `domain/dtos/in/`, la implementación con constructor privado y método factory `.create({rawData, validator})` en `application/dtos/in/`, y el validador `LucidValidator` en `application/validators/schemas/`.
+3. **Cumplir con `CustomError`:** Nunca capturar y ocultar errores ni lanzar excepciones genéricas.
+4. **Verificar el Formato y Linter:** Comprobar que no se violen las reglas de `analysis_options.yaml` (tipado de retornos, comas finales, sin `dynamic`, imports relativos, constructores sin nombre primero).
+5. **Preservar la Documentación:** No alterar comentarios ni documentaciones existentes a menos que el usuario lo solicite.
