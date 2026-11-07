@@ -1,0 +1,44 @@
+{
+  // 1. Configuración global para archivos que NO son Dart (JSON, Markdown, YAML, etc.)
+  //"editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  // 2. Configuración específica y exclusiva para Dart/Flutter
+  "[dart]": {
+    // Reemplazamos Prettier por el formateador oficial de Dart solo aquí
+    //"editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  // 3. Herramientas visuales de Flutter
+  "dart.previewFlutterUiGuides": true,
+
+  // 4. File Nesting adaptado al ecosistema
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.dart": "${capture}.g.dart, ${capture}.freezed.dart, ${capture}.part.dart",
+    "pubspec.yaml": "pubspec.lock, analysis_options.yaml, .metadata, pubspec_overrides.yaml, build.yaml",
+    "package.json": "pnpm-lock.yaml, nest-cli.json, tsconfig*.json",
+    "README.md": "CONTRIBUTING.md, LICENSE, CHANGELOG.md",
+    ".env.template": ".env*",
+    "Dockerfile": "docker*.yml, .dockerignore, Dockerfile.*"
+  },
+
+  // Forzar Prettier en archivos conflictivos
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

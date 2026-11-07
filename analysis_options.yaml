@@ -67,6 +67,6 @@ linter:
 
     # Mantiene un orden estricto en la clase exigiendo que los constructores vayan siempre arriba
     sort_constructors_first: false
-    
+
     # Asegura que el constructor principal (sin nombre) vaya antes que los constructores nombrados (.fromJson, etc)
     sort_unnamed_constructors_first: true
