@@ -146,7 +146,84 @@ Siguiendo la norma de `quality-criteria.md`:
 
 ---
 
-## 5. 🏷️ Nomenclatura y Buenas Prácticas de Código
+## 5. 🎯 Principio de Responsabilidad Única (SRP) y Descomposición de Métodos
+
+> [!IMPORTANT]
+> **PROHIBIDAS LAS FUNCIONES Y MÉTODOS "MONOLÍTICOS":**
+> Toda función o método debe tener una única responsabilidad bien delimitada. En lugar de que un método o función haga un montón de cosas a la vez, se debe descomponer obligatoriamente en métodos o funciones más pequeños y cohesivos con responsabilidad única.
+
+### 5.1. Regla de Descomposición y Métodos Auxiliares
+1. **Método Principal como Orquestador:** El método público principal (ej. `createUser`, `saveProgress`, etc.) debe actuar como un orquestador limpio y secuencial de alto nivel, delegando cada sub-tarea, validación o transformación a métodos auxiliares privados.
+2. **Validaciones en Métodos Independientes:** Si una operación requiere verificar una o más condiciones de negocio o integridad (ej. si un usuario ya existe, si el correo está duplicado, si hay saldo suficiente o si se alcanzó un límite), cada validación debe aislarse en su propio método privado (ej. `_validateUserExist(dto)`, `_validateEmail(dto)`, `_validateBalance(dto)`).
+3. **Escalabilidad y Extensibilidad:** En caso de que se requiera validar otra necesidad en el futuro, nunca se debe saturar el método principal ni añadir bloques de lógica dentro de métodos existentes; simplemente se crea un nuevo método privado para validar dicha necesidad específica y se invoca en el orquestador.
+
+### 5.2. Ejemplo Canónico del Proyecto (`MutationUserLocalDatasource`)
+Ubicación: `lib/modules/profile/infrastructure/datasources/mutation_local_datasource.dart`
+
+```dart
+// ❌ INCORRECTO: Método monolítico haciendo múltiples tareas no relacionadas
+@override
+Future<void> createUser({required CreateUserDto dto}) async {
+  // Mezclando consulta de validación en línea
+  final queryExisting = await _dbClient.query(
+    _userTableName,
+    conditions: (where: 'name = ?', whereArgs: [dto.name]),
+  );
+
+  if (queryExisting.isNotEmpty) {
+    throw CustomError.badRequest(
+      payload: [
+        (message: "There is an user with that name", path: "create user"),
+      ],
+      path: "MutationUserLocalDatasource",
+    );
+  }
+
+  // Mezclando mapeo, inserción y manejo de error del insert
+  final valuesToInsert = _mapperUser.fromCreateDtoToDb(dto);
+  final insertedId = await _dbClient.insert(_userTableName, valuesToInsert);
+
+  if (insertedId == 0) {
+    throw CustomError.internalServer(message: "Error al crear el usuario");
+  }
+}
+
+// ✅ CORRECTO: Responsabilidad única. createUser orquesta; la validación tiene su propio método dedicado
+@override
+Future<void> createUser({required CreateUserDto dto}) async {
+  await _validateUserExist(dto);
+
+  final DbValues valuesToInsert = _mapperUser.fromCreateDtoToDb(dto);
+  final int insertedId = await _dbClient.insert(
+    _userTableName,
+    valuesToInsert,
+  );
+
+  if (insertedId == 0) {
+    throw CustomError.internalServer(message: "Error al crear el usuario");
+  }
+}
+
+Future<void> _validateUserExist(CreateUserDto dto) async {
+  final queryExisting = await _dbClient.query(
+    _userTableName,
+    conditions: (where: 'name = ?', whereArgs: [dto.name]),
+  );
+
+  if (queryExisting.isNotEmpty) {
+    throw CustomError.badRequest(
+      payload: [
+        (message: "There is an user with that name", path: "create user"),
+      ],
+      path: "MutationUserLocalDatasource",
+    );
+  }
+}
+```
+
+---
+
+## 6. 🏷️ Nomenclatura y Buenas Prácticas de Código
 
 - **Archivos y Directorios:** Estrictamente `snake_case` (ej. `create_user_use_case.dart`, `custom_error.dart`).
 - **Clases, Mixins y Enums:** `PascalCase` (ej. `CreateUserUseCase`, `ActivityHistoryScreen`).
@@ -167,11 +244,12 @@ Siguiendo la norma de `quality-criteria.md`:
 
 ---
 
-## 6. 🛡️ Protocolo para Agentes al Modificar el Repositorio
+## 7. 🛡️ Protocolo para Agentes al Modificar el Repositorio
 
 Antes de dar por finalizada cualquier tarea en el código:
 1. **Respetar la Arquitectura:** Ubicar cada archivo en el módulo y capa correspondiente (`domain`, `application`, `infrastructure`, `presentation`).
 2. **DTOs y Esquemas:** Al definir entradas, modelar la interfaz en `domain/dtos/in/`, la implementación con constructor privado y método factory `.create({rawData, validator})` en `application/dtos/in/`, y el validador `LucidValidator` en `application/validators/schemas/`.
-3. **Cumplir con `CustomError`:** Nunca capturar y ocultar errores ni lanzar excepciones genéricas.
-4. **Verificar el Formato y Linter:** Comprobar que no se violen las reglas de `analysis_options.yaml` (tipado de retornos, comas finales, sin `dynamic`, imports relativos, constructores sin nombre primero).
-5. **Preservar la Documentación:** No alterar comentarios ni documentaciones existentes a menos que el usuario lo solicite.
+3. **Responsabilidad Única (SRP):** Descomponer cualquier método que realice múltiples acciones en métodos privados pequeños y enfocados (separando validaciones, comprobaciones de existencia o integridad en métodos individuales).
+4. **Cumplir con `CustomError`:** Nunca capturar y ocultar errores ni lanzar excepciones genéricas.
+5. **Verificar el Formato y Linter:** Comprobar que no se violen las reglas de `analysis_options.yaml` (tipado de retornos, comas finales, sin `dynamic`, imports relativos, constructores sin nombre primero).
+6. **Preservar la Documentación:** No alterar comentarios ni documentaciones existentes a menos que el usuario lo solicite.

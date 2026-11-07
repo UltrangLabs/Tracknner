@@ -153,3 +153,39 @@ lib/
         │   └── presentation/
         └── game_engine_module.dart # 🚪 API Pública del módulo Game Engine
 ```
+
+---
+
+## 🧠 Principios Arquitectónicos y Reglas de Flujo (Guía Práctica)
+
+Para mantener la aplicación escalable y que el código sea predecible, todo el equipo debe respetar cómo viaja la información. Dado que Tracknner es temporalmente una app "Offline-First" (nuestra base de datos local SQLite actúa como nuestro propio servidor), **debemos separar las validaciones en 3 niveles estrictos.** 
+
+Si no sabes dónde escribir una validación, utiliza esta guía:
+
+### Nivel 1: Validaciones de Estructura y Formato (Capa de DTOs)
+* **¿Quién es el responsable?** Los DTOs (Data Transfer Objects) y sus Validadores.
+* **¿Qué se valida aquí?** La forma cruda de los datos. 
+  * ¿El texto está vacío?
+  * ¿El nombre tiene menos de 3 caracteres?
+  * ¿El correo tiene un arroba (`@`)?
+  * ¿El dato recibido es un número válido?
+* **Regla estricta:** Estas validaciones ocurren en la frontera, justo antes de que el dato ingrese al Caso de Uso. Si el dato tiene mala forma, se rechaza inmediatamente.
+
+### Nivel 2: Validaciones de Reglas de Negocio Centrales (Capa de Casos de Uso / Dominio)
+* **¿Quién es el responsable?** Los Casos de Uso (Capa de Aplicación) o las Entidades/Servicios (Capa de Dominio).
+* **¿Qué se valida aquí?** El comportamiento, algoritmos y reglas del "juego" o la aplicación en sí.
+  * Cálculos matemáticos (ej. algoritmo para subir de nivel a la mascota según la experiencia).
+  * Lógica transaccional de la app (ej. verificar si el usuario tiene suficientes `virtualCoins` antes de permitirle comprar un ítem en la tienda).
+  * Mapeo de roles o permisos internos del usuario.
+* **⛔ REGLA DE ORO:** Un Caso de Uso **NUNCA** debe consultar a la base de datos (a través de un `QueryRepository`) para verificar si un registro ya existe (como comprobar nombres duplicados) antes de guardarlo. Esa NO es una regla del negocio móvil, es una restricción de la base de datos.
+
+### Nivel 3: Validaciones de Integridad de Datos (Capa de Infraestructura / Datasource)
+* **¿Quién es el responsable?** El Datasource (Nuestra capa de Infraestructura que simula ser el Backend).
+* **¿Qué se valida aquí?** Restricciones de CRUD y conflictos con datos existentes en la base de datos.
+  * ¿El nombre de usuario que intento registrar ya está ocupado por otro?
+  * ¿El ID de la mascota que intento actualizar realmente existe en la base de datos?
+* **Mecanismo:** El Datasource es el guardián de los datos. Antes de hacer un `insert` o `update`, el Datasource hace un `query` rápido de verificación (o confía en las restricciones `UNIQUE` de SQLite). Si detecta un conflicto, detiene la operación y lanza un error (`CustomError.badRequest`), el cual viaja de regreso hasta la UI.
+
+> **💡 ¿Por qué dividimos esto de forma tan estricta? (El Principio Abierto/Cerrado)**
+> Imagina que el día de mañana Tracknner conecta un Backend real con una API en la nube. 
+> Gracias a esta separación, nuestro Backend se encargará de las validaciones del **Nivel 3** (devolverá un error HTTP 400 si el nombre ya existe). Nosotros solo tendremos que crear un nuevo `ApiDatasource` en la capa de Infraestructura. **Los Casos de Uso (Nivel 2) y los DTOs (Nivel 1) no sufrirán ni una sola modificación.**
