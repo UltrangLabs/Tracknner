@@ -1,6 +1,6 @@
 import '../../../../../core/domain/types/app_uuid.dart';
 import '../../domain/datasources/wallet_datasource.dart';
-import '../../domain/dtos/in/save_coins_dto.dart';
+import '../../domain/dtos/in/user_amount_dto.dart';
 import '../../domain/repositories/wallet_repository.dart';
 
 class WalletRepositoryImpl implements WalletRepository {
@@ -9,12 +9,17 @@ class WalletRepositoryImpl implements WalletRepository {
   WalletRepositoryImpl({required this._walletDatasource});
 
   @override
-  Future<int> getCoins(AppUuid userId) {
-    return _walletDatasource.getCoins(userId);
+  Future<int> addCoins(UserAmountDto dto) {
+    return _walletDatasource.addCoins(dto);
   }
 
   @override
-  Future<void> saveCoins(SaveCoinsDto dto) {
-    return _walletDatasource.saveCoins(dto);
+  Future<int> deductCoins(UserAmountDto dto) {
+    return _walletDatasource.deductCoins(dto);
+  }
+
+  @override
+  Future<int> getCoins(AppUuid userId) {
+    return _walletDatasource.getCoins(userId);
   }
 }

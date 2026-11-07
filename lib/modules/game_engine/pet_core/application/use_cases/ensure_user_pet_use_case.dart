@@ -22,8 +22,6 @@ class EnsureUserPetUseCase implements UseCaseStructure<Pet, Unknown> {
       validator: _ensureUserPetValidator,
     );
 
-    final pet = await _petRepository.findByUser(ensureUserPetDto.userId);
-
-    return pet ?? await _petRepository.create(ensureUserPetDto);
+    return _petRepository.ensurePet(ensureUserPetDto);
   }
 }

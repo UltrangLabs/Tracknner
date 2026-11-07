@@ -4,7 +4,6 @@ typedef PetProgress = ({int level, int experience});
 
 int requiredExperienceFor(int level) => level * _experiencePerLevel;
 
-// Una ganancia grande puede cruzar varios niveles; el sobrante se conserva.
 PetProgress applyExperience({
   required int level,
   required int experience,

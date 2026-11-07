@@ -1,7 +1,8 @@
 import '../../../../../core/domain/types/app_uuid.dart';
-import '../dtos/in/save_coins_dto.dart';
+import '../dtos/in/user_amount_dto.dart';
 
 abstract class WalletRepository {
+  Future<int> addCoins(UserAmountDto dto);
+  Future<int> deductCoins(UserAmountDto dto);
   Future<int> getCoins(AppUuid userId);
-  Future<void> saveCoins(SaveCoinsDto dto);
 }

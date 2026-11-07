@@ -4,10 +4,14 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/di/injection_container.dart';
 import '../../../../core/presentation/routers/constants/routes_path_constant.dart';
+
 import '../../../../shared/theme/app_theme.dart';
 import '../../../../shared/widgets/window_modal.dart';
+
 import '../../../game_engine/game_engine_module.dart';
+
 import '../../domain/entities/user_entity.dart';
+
 import '../constants/profile_constants.dart';
 import '../controllers/profile_controller.dart';
 import '../widgets/daily_mission_card.dart';
@@ -32,7 +36,7 @@ class MyProfileScreen extends StatelessWidget {
 
   ProfileController _createController(BuildContext context) {
     final controller = sl<ProfileController>();
-    // Se difiere para no notificar listeners durante la fase de build.
+
     Future<void>.microtask(controller.checkExistingAccount);
     return controller;
   }
@@ -56,7 +60,6 @@ class _ProfileBodyState extends State<_ProfileBody> {
   Widget build(BuildContext context) {
     final controller = context.watch<ProfileController>();
 
-    // Evita abrir el formulario antes de saber si la cuenta ya existe.
     if (controller.isLoading || !controller.hasCheckedAccount) {
       return const Center(
         child: CircularProgressIndicator(color: primaryColor),
@@ -94,24 +97,9 @@ class _ProfileBodyState extends State<_ProfileBody> {
         width: _modalWidth,
         height: _modalHeight,
         barrierDismissible: false,
-        child: SingleChildScrollView(
-          child: UserForm(
-            onPetChosen: controller.choosePet,
-            onUserCreated: (String userName) =>
-                _onUserCreated(controller: controller, userName: userName),
-          ),
-        ),
+        child: SingleChildScrollView(child: UserForm(controller: controller)),
       ).whenComplete(() => _isModalOpen = false);
     });
-  }
-
-  Future<void> _onUserCreated({
-    required ProfileController controller,
-    required String userName,
-  }) async {
-    // showDialog usa el navigator raíz por defecto (fuera del ShellRoute).
-    Navigator.of(context, rootNavigator: true).pop();
-    await controller.createUser({'name': userName});
   }
 }
 
