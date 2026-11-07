@@ -37,20 +37,24 @@ class ProfileController extends BaseController<User> {
   }
 
   Future<void> checkExistingAccount() async {
-    setLoading(isLoading: true);
+    return executeUseCase(_loadAccountData);
+  }
 
-    try {
-      final user = await _getUserAction(const NoParams());
-      _hasCheckedAccount = true;
-      if (user != null) {
-        await _loadCompanionData(user);
-        setData(user);
-      } else {
-        setLoading(isLoading: false);
-      }
-    } catch (e) {
-      _hasCheckedAccount = true;
-      setError(e.toString());
+  Future<void> createUser(Unknown rawData) async {
+    return executeUseCase(() async {
+      await _createUserAction(rawData);
+      await _loadAccountData();
+    });
+  }
+
+  Future<void> _loadAccountData() async {
+    final user = await _getUserAction(const NoParams());
+    _hasCheckedAccount = true;
+    if (user != null) {
+      await _loadCompanionData(user);
+      setData(user);
+    } else {
+      setLoading(isLoading: false);
     }
   }
 
@@ -62,16 +66,5 @@ class ProfileController extends BaseController<User> {
       'imageAssetName': _chosenPet.imagePath,
     });
     _mission = await _getDailyMissionAction(const NoParams());
-  }
-
-  Future<void> createUser(Unknown rawData) async {
-    setLoading(isLoading: true);
-    try {
-      await _createUserAction(rawData);
-
-      await checkExistingAccount();
-    } catch (e) {
-      setError(e.toString());
-    }
   }
 }

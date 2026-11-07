@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/theme/app_theme.dart';
+import '../../domain/dtos/in/create_user_dto.dart';
 import '../constants/profile_constants.dart';
+import '../controllers/profile_controller.dart';
 import 'pet_carousel_banner.dart';
 
 class UserForm extends StatefulWidget {
-  final ValueChanged<String>? onUserCreated;
-  final ValueChanged<String>? onPetChosen;
+  final ProfileController controller;
+  final VoidCallback? onSuccess;
 
-  const UserForm({super.key, this.onUserCreated, this.onPetChosen});
+  const UserForm({super.key, required this.controller, this.onSuccess});
 
   @override
   State<UserForm> createState() => _UserFormState();
@@ -34,48 +36,71 @@ class _UserFormState extends State<UserForm> {
     border: const Border.fromBorderSide(BorderSide(color: navBorderColor)),
   );
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final FocusNode _nameFocusNode = FocusNode();
 
-  // Selected pet image stored in class state as requested
   String _selectedPetImage = kAvailablePets.first.imagePath;
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onControllerChanged);
+  }
+
+  @override
   void dispose() {
+    widget.controller.removeListener(_onControllerChanged);
     _nameController.dispose();
     _nameFocusNode.dispose();
     super.dispose();
   }
 
+  void _onControllerChanged() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    final controller = widget.controller;
+
     return Container(
       padding: EdgeInsets.all(kUserFormDimensions.cardPadding),
       decoration: _cardDecoration,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          // Evita que el formulario se estire infinitamente dentro del modal.
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const _FormHeader(),
-            SizedBox(height: kProfileLayoutDimensions.spacingDefault),
-            PetCarouselBanner(
-              selectedPetImage: _selectedPetImage,
-              onPetSelected: _onPetSelected,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const _FormHeader(),
+          SizedBox(height: kProfileLayoutDimensions.spacingDefault),
+          PetCarouselBanner(
+            selectedPetImage: _selectedPetImage,
+            onPetSelected: _onPetSelected,
+          ),
+          SizedBox(height: kProfileLayoutDimensions.spacingMedium),
+          if (controller.errorMessage != null) ...[
+            Text(
+              controller.errorMessage!,
+              style: const TextStyle(
+                color: inputErrorColor,
+                fontSize: 13.0,
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(height: kProfileLayoutDimensions.spacingMedium),
-            _NameInputField(
-              controller: _nameController,
-              focusNode: _nameFocusNode,
-              validator: _validateName,
-            ),
-            SizedBox(height: kProfileLayoutDimensions.spacingMedium),
-            _SubmitButton(onPressed: _onSubmit),
+            SizedBox(height: kProfileLayoutDimensions.spacingTiny),
           ],
-        ),
+          _NameInputField(
+            controller: _nameController,
+            focusNode: _nameFocusNode,
+            errorText: controller.validationErrors[CreateUserDto.nameKey],
+            onChanged: (_) => controller.clearFieldError(CreateUserDto.nameKey),
+          ),
+          SizedBox(height: kProfileLayoutDimensions.spacingMedium),
+          _SubmitButton(
+            isLoading: controller.isLoading,
+            onPressed: controller.isLoading ? null : _onSubmit,
+          ),
+        ],
       ),
     );
   }
@@ -86,28 +111,17 @@ class _UserFormState extends State<UserForm> {
     });
   }
 
-  String? _validateName(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return kUserFormStrings.nameRequiredError;
-    }
-    if (value.trim().length < 3) {
-      return kUserFormStrings.nameMinLengthError;
-    }
-    if (value.trim().length > 50) {
-      return kUserFormStrings.nameMaxLengthError;
-    }
-    final safeTextRegex = RegExp(r'^[a-zA-Z0-9\s\-_.,!¡?¿@ñÑáéíóúÁÉÍÓÚ]+$');
-    if (!safeTextRegex.hasMatch(value)) {
-      return kUserFormStrings.nameInvalidError;
-    }
-    return null;
-  }
-
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     _nameFocusNode.unfocus();
-    if (_formKey.currentState?.validate() ?? false) {
-      widget.onPetChosen?.call(_selectedPetImage);
-      widget.onUserCreated?.call(_nameController.text.trim());
+    widget.controller.choosePet(_selectedPetImage);
+
+    await widget.controller.createUser({
+      CreateUserDto.nameKey: _nameController.text.trim(),
+    });
+
+    if (widget.controller.data != null && mounted) {
+      widget.onSuccess?.call();
+      Navigator.of(context, rootNavigator: true).pop();
     }
   }
 }
@@ -187,12 +201,14 @@ class _NameInputField extends StatelessWidget {
 
   final TextEditingController controller;
   final FocusNode focusNode;
-  final FormFieldValidator<String> validator;
+  final String? errorText;
+  final ValueChanged<String>? onChanged;
 
   const _NameInputField({
     required this.controller,
     required this.focusNode,
-    required this.validator,
+    this.errorText,
+    this.onChanged,
   });
 
   @override
@@ -202,10 +218,10 @@ class _NameInputField extends StatelessWidget {
       children: [
         Text(kUserFormStrings.nameLabel, style: _labelStyle),
         SizedBox(height: kProfileLayoutDimensions.spacingTiny),
-        TextFormField(
+        TextField(
           controller: controller,
           focusNode: focusNode,
-          validator: validator,
+          onChanged: onChanged,
           style: const TextStyle(
             fontSize: 15.0,
             color: textPrimaryColor,
@@ -214,8 +230,9 @@ class _NameInputField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: kUserFormStrings.nameHint,
             hintStyle: _hintStyle,
-            helperText: kUserFormStrings.nameHelper,
+            helperText: errorText == null ? kUserFormStrings.nameHelper : null,
             helperStyle: _helperStyle,
+            errorText: errorText,
             prefixIcon: Icon(
               Icons.person_outline_rounded,
               color: primaryColor,
@@ -249,9 +266,10 @@ class _SubmitButton extends StatelessWidget {
     color: whiteColor,
   );
 
-  final VoidCallback onPressed;
+  final bool isLoading;
+  final VoidCallback? onPressed;
 
-  const _SubmitButton({required this.onPressed});
+  const _SubmitButton({required this.isLoading, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +284,16 @@ class _SubmitButton extends StatelessWidget {
           shape: RoundedRectangleBorder(borderRadius: _buttonRadius),
         ),
         onPressed: onPressed,
-        child: Text(kUserFormStrings.submitButtonText, style: _buttonTextStyle),
+        child: isLoading
+            ? const SizedBox(
+                height: 20.0,
+                width: 20.0,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.0,
+                  valueColor: AlwaysStoppedAnimation<Color>(whiteColor),
+                ),
+              )
+            : Text(kUserFormStrings.submitButtonText, style: _buttonTextStyle),
       ),
     );
   }

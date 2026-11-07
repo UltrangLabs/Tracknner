@@ -9,7 +9,7 @@ class CreateUserValidateSchema extends LucidValidator<CreateUserDto> {
       r'^[a-zA-Z0-9\s\-_.,!¡?¿@ñÑáéíóúÁÉÍÓÚ]+$';
 
   CreateUserValidateSchema() {
-    ruleFor((dto) => dto.name, key: 'name')
+    ruleFor((dto) => dto.name, key: CreateUserDto.nameKey)
         .notEmpty(message: 'El nombre es requerido')
         .minLength(_minLength, message: 'El nombre es muy corto')
         .maxLength(_maxLength, message: 'El nombre es muy largo')

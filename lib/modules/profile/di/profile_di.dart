@@ -5,11 +5,10 @@ import '../../../core/infrastructure/database/interfaces/local_db_client.dart';
 import '../../game_engine/game_engine_module.dart';
 import '../application/use_cases/create_user_use_case.dart';
 import '../application/use_cases/get_user_already_have_an_account_use_case.dart';
-import '../application/validators/schemas/looking_user_schema.dart';
+
 import '../application/validators/schemas/user_schema.dart';
 
 import '../domain/dtos/in/create_user_dto.dart';
-import '../domain/dtos/in/looking_user_exist_dto.dart';
 
 import '../infrastructure/datasources/mutation_local_datasource.dart';
 import '../infrastructure/datasources/query_local_datasource.dart';
@@ -24,14 +23,10 @@ void initProfileDi() {
 
   //* Schemas
   late final createUserValidateSchema = CreateUserValidateSchema();
-  late final userExistValidateShcema = LookingUserValidateSchema();
 
   //* Validators
   late final userValidator = ValidatorAdapter<CreateUserDto>(
     createUserValidateSchema,
-  );
-  late final userExistValidator = ValidatorAdapter<LookingUserDto>(
-    userExistValidateShcema,
   );
 
   //* Mappers
@@ -61,9 +56,7 @@ void initProfileDi() {
   );
   late final createUser = CreateUserUseCase(
     mutationUserRepository: mutationRepository,
-    queryUserRepository: queryUserRepository,
     userValidator: userValidator,
-    userExistValidator: userExistValidator,
   );
 
   //* Actions

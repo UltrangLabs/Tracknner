@@ -21,6 +21,8 @@ class CreateUserDtoImpl implements CreateUserDto {
   }
 
   static CreateUserDto _mapFromRaw(Unknown rawData) {
-    return CreateUserDtoImpl._(name: rawData['name']?.toString() ?? "");
+    return CreateUserDtoImpl._(
+      name: rawData[CreateUserDto.nameKey]?.toString() ?? "",
+    );
   }
 }
