@@ -1,0 +1,30 @@
+{
+  "recommendations": [
+    // ==========================================================
+    // 🚨 EXTENSIONES OBLIGATORIAS (Core y Formateo)
+    // ==========================================================
+    "dart-code.flutter",
+    "dart-code.dart-code",
+    "esbenp.prettier-vscode",
+    // ==========================================================
+    // 🛠️ EXTENSIONES RECOMENDADAS (Productividad y DX)
+    // ==========================================================
+    "usernamehw.errorlens",
+    "aaron-bond.better-comments",
+    "eamodio.gitlens",
+    "jeroen-meijer.pubspec-assist",
+    "nash.awesome-flutter-snippets",
+    "google.arb-editor",
+    "circlecodesolution.ccs-flutter-color",
+    "wayou.vscode-todo-highlight",
+    "tyriar.lorem-ipsum",
+    // ==========================================================
+    // 🎨 UI Y TEMAS (Opcional, pero sugerido para consistencia)
+    // ==========================================================
+    // Nota para el equipo: Material Icon Theme es crucial para ver
+    // los colores personalizados de las carpetas de Clean Architecture.
+    "pkief.material-icon-theme",
+    "teabyii.ayu",
+    "miguelsolorio.fluent-icons"
+  ]
+}

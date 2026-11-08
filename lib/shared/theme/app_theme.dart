@@ -33,3 +33,23 @@ class AppTheme {
     );
   }
 }
+
+// Navigation and UI colors
+const Color navActiveColor = primaryColor;
+const Color navInactiveColor = Color.fromRGBO(142, 142, 147, 1);
+const Color navBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
+const Color navBorderColor = Color.fromRGBO(230, 232, 236, 1);
+const Color transparentColor = Color.fromRGBO(0, 0, 0, 0);
+const Color surfaceBackgroundColor = Color.fromRGBO(248, 249, 250, 1);
+const Color textPrimaryColor = Color.fromRGBO(33, 33, 33, 1);
+const Color textSecondaryColor = Color.fromRGBO(117, 117, 117, 1);
+
+// Profile and Card UI monochromatic colors
+const Color whiteColor = Color.fromRGBO(255, 255, 255, 1);
+const Color progressBarBackgroundColor = Color.fromRGBO(240, 241, 244, 1);
+const Color petHaloBackgroundColor = Color.fromRGBO(255, 252, 245, 1);
+const Color petHaloBorderColor = Color.fromRGBO(248, 237, 216, 1);
+const Color cardBackgroundColor = Color.fromRGBO(255, 255, 255, 1);
+const Color cardShadowColor = Color.fromRGBO(0, 0, 0, 0.04);
+const Color inputBorderColor = Color.fromRGBO(225, 228, 233, 1);
+const Color inputErrorColor = Color.fromRGBO(210, 80, 60, 1);

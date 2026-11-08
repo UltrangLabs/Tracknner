@@ -95,8 +95,15 @@ class WindowModal extends StatelessWidget {
     Navigator.of(context).maybePop();
   }
 
+  static const Duration _keyboardAnimationDuration = Duration(
+    milliseconds: 200,
+  );
+
   @override
   Widget build(BuildContext context) {
+    // Espacio ocupado por el teclado virtual (0 cuando está oculto).
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+
     return Material(
       type: MaterialType.transparency,
       child: SizedBox.expand(
@@ -111,18 +118,27 @@ class WindowModal extends StatelessWidget {
                 },
               ),
             ),
-            _ModalCard(
-              width: width,
-              height: height,
-              backgroundColor: backgroundColor,
-              borderColor: borderColor,
-              borderRadius: borderRadius,
-              padding: padding,
-              showCloseButton: showCloseButton,
-              onClose: () {
-                _handleClose(context);
-              },
-              child: child,
+            Positioned.fill(
+              child: AnimatedPadding(
+                duration: _keyboardAnimationDuration,
+                curve: Curves.easeOut,
+                padding: EdgeInsets.only(bottom: keyboardInset),
+                child: Center(
+                  child: _ModalCard(
+                    width: width,
+                    height: height,
+                    backgroundColor: backgroundColor,
+                    borderColor: borderColor,
+                    borderRadius: borderRadius,
+                    padding: padding,
+                    showCloseButton: showCloseButton,
+                    onClose: () {
+                      _handleClose(context);
+                    },
+                    child: child,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -176,8 +192,10 @@ class _ModalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.sizeOf(context);
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
     final maxAllowedWidth = mediaQuery.width * 0.92;
-    final maxAllowedHeight = mediaQuery.height * 0.92;
+    // Se descuenta el teclado para que el modal quepa en el espacio libre.
+    final maxAllowedHeight = (mediaQuery.height - keyboardInset) * 0.92;
 
     final effectiveWidth = width > maxAllowedWidth ? maxAllowedWidth : width;
     final effectiveHeight = height > maxAllowedHeight

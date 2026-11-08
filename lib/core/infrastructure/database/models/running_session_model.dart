@@ -7,9 +7,9 @@ class RunningSessionModel implements DatabaseModel {
   @override
   String get createTableQuery => '''
     CREATE TABLE RunningSession (
-      sessionId INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
-      petId INTEGER, 
+      sessionId TEXT PRIMARY KEY,
+      userId TEXT NOT NULL,
+      petId TEXT, 
       startTime DATETIME NOT NULL,
       endTime DATETIME NOT NULL,
       totalDurationSeconds INTEGER NOT NULL,

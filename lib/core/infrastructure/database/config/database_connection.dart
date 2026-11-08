@@ -54,12 +54,34 @@ class DatabaseConnection implements LocalDbClient {
   }
 
   @override
-  Future<List<DbValues>> query(String table, {DbConditionParams? conditions}) {
+  Future<List<DbValues>> query(
+    String table, {
+    bool? distinct,
+    List<String>? columns,
+    DbConditionParams? conditions,
+    String? groupBy,
+    String? having,
+    String? orderBy,
+    int? limit,
+    int? offset,
+  }) {
     return _db.query(
       table,
+      distinct: distinct,
+      columns: columns,
       where: conditions?.where,
       whereArgs: conditions?.whereArgs,
+      groupBy: groupBy,
+      having: having,
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
     );
+  }
+
+  @override
+  Future<List<DbValues>> rawQuery(String sql, [List<Object?>? arguments]) {
+    return _db.rawQuery(sql, arguments);
   }
 
   @override
@@ -92,6 +114,21 @@ class DatabaseConnection implements LocalDbClient {
       where: conditions?.where,
       whereArgs: conditions?.whereArgs,
     );
+  }
+
+  @override
+  Future<int> rawInsert(String sql, [List<Object?>? arguments]) {
+    return _db.rawInsert(sql, arguments);
+  }
+
+  @override
+  Future<int> rawUpdate(String sql, [List<Object?>? arguments]) {
+    return _db.rawUpdate(sql, arguments);
+  }
+
+  @override
+  Future<int> rawDelete(String sql, [List<Object?>? arguments]) {
+    return _db.rawDelete(sql, arguments);
   }
 
   Future<void> disconnect() async {

@@ -2,6 +2,8 @@ import 'package:uuid/uuid.dart';
 
 import '../../domain/types/app_uuid.dart';
 
+typedef GenerateUuIdV4 = AppUuid Function();
+
 const Uuid _uuidGenerator = Uuid();
 
 AppUuid generateUuidV4() {

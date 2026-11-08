@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🚀 Tracknner (Dev)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": ["--dart-define-from-file=.env.dev"]
+    },
+    {
+      "name": "🧪 Tracknner (Integration Tests)",
+      "request": "launch",
+      "type": "dart",
+      "program": "integration_test/app_test.dart",
+      "args": ["--dart-define-from-file=.env.test"]
+    }
+  ]
+}

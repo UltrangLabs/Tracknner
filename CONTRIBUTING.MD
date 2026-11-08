@@ -85,7 +85,7 @@ Al abrir un Pull Request, el pipeline de GitHub Actions ejecuta validaciones pro
 | Testing (flutter test)                |      ❌       |       ❌       |        ✅         |        ✅        |
 
 > **¿Por qué esta progresión?**
-> En ramas de trabajo (`feat/`) priorizamos la velocidad de iteración asegurando formato (80 caracteres) y tipado estricto. La compilación de los binarios (APK/iOS) es pesada y toma tiempo, por lo que solo se ejecuta cuando consolidamos una fase hacia `develop` o `production` para garantizar que la app realmente corre.
+> En ramas de trabajo (`feat/`) priorizamos la velocidad de iteración asegurando formato y tipado estricto. La compilación de los binarios (APK/iOS) es pesada y toma tiempo, por lo que solo se ejecuta cuando consolidamos una fase hacia `develop` o `production` para garantizar que la app realmente corre.
 
 ---
 
@@ -101,7 +101,7 @@ type(scope): imperative description
 
 - Todo en minúsculas.
 - Sin punto final.
-- Describe qué hace el commit (ej. `feat(iam): add login screen`).
+- Describe qué hace el commit (ej. `feat(profile): add user form`).
 
 ### Tipos permitidos
 
@@ -114,20 +114,18 @@ type(scope): imperative description
 
 ### Scopes permitidos
 
-Scope Carpeta
-
----
-
-- **core**: `lib/core/`
-- **shared**: `lib/shared/`
-- **profile**: `lib/modules/profile/`
-- **activity**: `lib/modules/activity/`
-- **game-engine**: `lib/modules/game_engine/`
-- **deps**: Dependencias (pubspec.yaml)
-- **tools**: Scripts y herramientas
-- **docs**: Archivos `.md` y documentación
-- **root**: Configuración principal
-- **ci**: GitHub Actions, Husky, CI
+| Scope | Carpeta / Contexto |
+|---|---|
+| **core** | `lib/core/` |
+| **shared** | `lib/shared/` |
+| **profile** | `lib/modules/profile/` |
+| **activity** | `lib/modules/activity/` |
+| **game-engine** | `lib/modules/game_engine/` |
+| **deps** | Dependencias (`pubspec.yaml`) |
+| **tools** | Scripts y herramientas |
+| **docs** | Archivos `.md` y documentación |
+| **root** | Configuración principal |
+| **ci** | GitHub Actions, Husky, CI |
 
 ### Ejemplos válidos
 
@@ -142,19 +140,23 @@ git commit -m "chore(ci): update commitlint configuration"
 
 ## 📏 Estándares de Código y Arquitectura
 
-Tu código debe respetar el `analysis_options.yaml` en modo estricto. De lo contrario, el CI fallará:
+Tu código debe respetar el `analysis_options.yaml` en modo estricto. De lo contrario, el CI y Husky fallarán:
 
 1. **Clean Architecture:** La capa de Dominio no debe conocer a Flutter (`package:flutter`). Mantenla en Dart puro. La capa de Presentación y de Datos se comunican exclusivamente a través del Dominio.
 2. **Criterios de Presentación (UI & Widgets):** Cumplimiento obligatorio de la Stepdown Rule, widgets en clases dedicadas (`StatelessWidget`/`StatefulWidget`), extracción de elementos estáticos fuera de `build()` y liberación de controladores con `dispose()` ([Ver detalles](.docs/quality/quality-presentation-criteria.md)).
-3. **Importaciones Absolutas:** Prohibido usar rutas relativas para salir de tu módulo (`../../`). Utiliza siempre Package Imports: `import 'package:mi_app/shared/theme.dart';`.
-4. **Tipado Estricto:** Está estrictamente prohibido el uso de `dynamic` y todos los métodos deben tener un tipo de retorno declarado.
-5. **Cero Advertencias:** Todo el código debe estar libre de "blue lines" (warnings).
+3. **Importaciones Relativas (`prefer_relative_imports`):** Dentro del código fuente de `lib/`, se deben usar importaciones relativas ordenadas (`directives_ordering`) para mantener la cohesión y modularidad interna (ej. `import '../../domain/entities/user.dart';`).
+4. **Tipado Estricto:** Está estrictamente prohibido el uso de `dynamic` (`avoid_dynamic_calls: error`), con tipado fuerte activado (`strict-casts`, `strict-inference`, `strict-raw-types`) y retorno explícito en todo método o función (`always_declare_return_types: error`).
+5. **Constructores Limpios:** Uso obligatorio de inicialización formal directa (`prefer_initializing_formals: true`, ej. `MyClass({required this._field})`) y el constructor principal sin nombre siempre debe ubicarse antes de los constructores nombrados (`sort_unnamed_constructors_first: true`).
+6. **Comas Finales Obligatorias (`require_trailing_commas`):** Toda lista de parámetros multilínea, colección o árbol de widgets debe terminar con una coma final (`,`) para forzar el formateo en cascada de Dart.
+7. **Control de Flujo con Llaves:** Siempre usar llaves `{}` en `if`, `else`, `for` y `while` (`curly_braces_in_flow_control_structures: error`).
+8. **Parámetros Booleanos Nombrados:** Prohibido pasar booleanos posicionales (`avoid_positional_boolean_parameters: true`); deben ser siempre nombrados (ej. `setLoading({required bool isLoading})`).
+9. **Cero Advertencias:** Todo el código debe pasar `dart analyze --fatal-infos --fatal-warnings` sin observaciones.
 
 ---
 
 ## 📝 Convención de Pull Requests
 
-- **Título:** Semantic commit (`feat(iam): diseño inicial de la pantalla de login`).
+- **Título:** Semantic commit (`feat(profile): diseño inicial de la pantalla de login`).
 - **Cuerpo:** Obligatorio enlazar el ticket en la sección "Resolves" (ej. `Resolves #5`) para automatizar el Kanban.
 - **Destino:** Los PRs diarios deben apuntar a la rama `phase/` activa.
 

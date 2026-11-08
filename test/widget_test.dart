@@ -1,30 +1,63 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:running/core/di/injection_container.dart';
+import 'package:running/core/domain/types/app_uuid.dart';
+import 'package:running/core/domain/types/unknown_type.dart';
 import 'package:running/main.dart';
+import 'package:running/modules/game_engine/game_engine_module.dart';
+import 'package:running/modules/profile/domain/entities/user_entity.dart';
+import 'package:running/modules/profile/presentation/controllers/profile_controller.dart';
+import 'package:running/modules/profile/presentation/screens/my_profile_screen.dart';
+import 'package:running/shared/screens/dashboard_screen.dart';
+import 'package:running/shared/widgets/bottom_nav.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Dashboard smoke test verifies navigation tabs', (
+    WidgetTester tester,
+  ) async {
+    await sl.reset();
+    sl.registerFactory<ProfileController>(
+      () => ProfileController(
+        getUserAction: (_) async => User(
+          id: AppUuid('user-1'),
+          name: 'Sofia',
+          virtualCoins: 0,
+          currentStreak: 0,
+          highestStreak: 0,
+          isPremium: false,
+        ),
+        createUserAction: (_) async {},
+        ensureUserPetAction: (Unknown rawData) async => Pet(
+          id: AppUuid('pet-1'),
+          userId: AppUuid(rawData['userId'].toString()),
+          name: rawData['name'].toString(),
+          breed: rawData['breed'].toString(),
+          imageAssetName: rawData['imageAssetName'].toString(),
+          level: 1,
+          experience: 0,
+        ),
+        getDailyMissionAction: (_) async =>
+            const DailyMission(targetDurationSeconds: 900),
+      ),
+    );
+
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byType(MyProfileScreen), findsOneWidget);
+    expect(find.byType(BottomNav), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text('Inicio'), findsWidgets);
+    expect(find.text('Carrera'), findsWidgets);
+    expect(find.text('Resumen'), findsWidgets);
+    expect(find.text('Historia'), findsWidgets);
+    expect(find.text('Mascota'), findsWidgets);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Tap on Carrera tab
+    await tester.tap(find.byIcon(Icons.access_time_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(DashboardScreen), findsOneWidget);
   });
 }

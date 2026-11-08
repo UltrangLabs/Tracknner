@@ -7,8 +7,8 @@ class DailyMissionModel implements DatabaseModel {
   @override
   String get createTableQuery => '''
     CREATE TABLE DailyMission (
-      missionId INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL,
+      missionId TEXT PRIMARY KEY,
+      userId TEXT NOT NULL,
       assignedDate DATE NOT NULL,
       targetDurationSeconds INTEGER NOT NULL,
       isCompleted BOOLEAN NOT NULL CHECK (isCompleted IN (0, 1)) DEFAULT 0,

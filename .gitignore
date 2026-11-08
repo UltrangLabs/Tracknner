@@ -48,4 +48,11 @@ app.*.map.json
 .widget_preview/
 
 # vscode
-.vscode/
+.vscode/*          
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Entornos locales y secretos
+.env*
+!.env.template

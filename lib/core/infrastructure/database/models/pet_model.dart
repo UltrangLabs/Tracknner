@@ -7,8 +7,8 @@ class PetModel implements DatabaseModel {
   @override
   String get createTableQuery => '''
     CREATE TABLE Pet (
-      petId INTEGER PRIMARY KEY AUTOINCREMENT,
-      userId INTEGER NOT NULL UNIQUE,
+      petId TEXT PRIMARY KEY,
+      userId TEXT NOT NULL UNIQUE,
       petName TEXT NOT NULL,
       petBreed TEXT NOT NULL,
       imageAssetName TEXT NOT NULL,

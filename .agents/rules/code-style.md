@@ -56,7 +56,16 @@ Al definir funciones, métodos o constructores en cualquier capa:
 
 ---
 
-## 3. 🛡️ Análisis Estático, Linter y Tipado Fuerte
+## 3. 🎯 Principio de Responsabilidad Única (SRP) y Descomposición de Métodos
+
+- **Prohibido el código monolítico:** Ninguna función o método debe asumir múltiples responsabilidades mezcladas (validaciones complejas en línea, consultas de verificación, transformaciones de datos y operaciones de mutación juntas).
+- **El método principal orquesta:** Métodos de alto nivel (como mutaciones, inserciones o ejecuciones de casos de uso) deben limitarse a coordinar pasos concisos, delegando cada sub-tarea a métodos auxiliares privados.
+- **Validaciones independientes:** Si una operación requiere verificar una o más condiciones previas (existencia, unicidad, límites, permisos), cada verificación debe extraerse a su propio método privado (ej. `_validateUserExist(dto)`).
+- **Extensibilidad limpia:** Si surge una nueva necesidad o validación en el futuro, se añade un nuevo método especializado en lugar de inflar o alterar métodos existentes.
+
+---
+
+## 4. 🛡️ Análisis Estático, Linter y Tipado Fuerte
 
 - **Prohibido `dynamic` (`avoid_dynamic_calls: error`):** Utilizar `Unknown` o `Object?` con validaciones explícitas de tipo.
 - **Retornos Explícitos (`always_declare_return_types: error`):** Tipar siempre el valor de retorno de funciones, métodos y getters (`Future<void>`, `int`, `Widget`).
@@ -71,7 +80,7 @@ Al definir funciones, métodos o constructores en cualquier capa:
 
 ---
 
-## 4. 🧩 Buenas Prácticas de Sintaxis Moderna
+## 5. 🧩 Buenas Prácticas de Sintaxis Moderna
 
 - **Manejo de Nulos:** Usar operadores modernos (`?.`, `??`, `??=`) en lugar de bloques `if` redundantes.
 - **Colecciones UI (Collection-If):** Usar `[if (condition) Widget()]` directamente dentro de listas de hijos, evitando ternarios que retornen `SizedBox.shrink()` o widgets nulos.
@@ -80,7 +89,7 @@ Al definir funciones, métodos o constructores en cualquier capa:
 
 ---
 
-## 5. 🎨 Arquitectura de UI y Capa de Presentación
+## 6. 🎨 Arquitectura de UI y Capa de Presentación
 
 ### 5.1. Clean Code en Widgets Stateless
 - **Clases Dedicated vs Métodos:** PROHIBIDO extraer widgets en métodos auxiliares como `Widget _buildItem()`. Toda sección conceptual debe ser una clase `StatelessWidget`.

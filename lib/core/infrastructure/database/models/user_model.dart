@@ -7,7 +7,7 @@ class UserModel implements DatabaseModel {
   @override
   String get createTableQuery => '''
     CREATE TABLE User (
-      userId INTEGER PRIMARY KEY AUTOINCREMENT,
+      userId TEXT PRIMARY KEY,
       name TEXT NOT NULL,      
       virtualCoins INTEGER NOT NULL DEFAULT 0,
       currentStreak INTEGER NOT NULL DEFAULT 0,

@@ -9,7 +9,6 @@ analyzer:
   errors:
     avoid_dynamic_calls: error # Prohíbe el uso de 'any' (dynamic)
     always_declare_return_types: error # Obliga a tipar retornos
-    always_use_package_imports: error # Obliga rutas absolutas, prohíbe ../
     curly_braces_in_flow_control_structures: error # Exige llaves siempre
     prefer_const_constructors: error # Calidad crítica en Flutter
     prefer_const_declarations: error # Equivalente a tu exigencia de inmutabilidad
@@ -33,7 +32,6 @@ linter:
 
     # --- ESTRUCTURA Y FLUJO ---
     always_declare_return_types: true
-    #always_use_package_imports: true
     curly_braces_in_flow_control_structures: true
 
     # --- CALIDAD Y MODERNIDAD ---
@@ -69,6 +67,6 @@ linter:
 
     # Mantiene un orden estricto en la clase exigiendo que los constructores vayan siempre arriba
     sort_constructors_first: false
-    
+
     # Asegura que el constructor principal (sin nombre) vaya antes que los constructores nombrados (.fromJson, etc)
     sort_unnamed_constructors_first: true

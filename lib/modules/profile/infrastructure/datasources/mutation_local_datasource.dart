@@ -16,6 +16,8 @@ class MutationUserLocalDatasource implements MutationUserDatarource {
 
   @override
   Future<void> createUser({required CreateUserDto dto}) async {
+    await _validateUserExist(dto);
+
     final DbValues valuesToInsert = _mapperUser.fromCreateDtoToDb(dto);
     final int insertedId = await _dbClient.insert(
       _userTableName,
@@ -24,6 +26,22 @@ class MutationUserLocalDatasource implements MutationUserDatarource {
 
     if (insertedId == 0) {
       throw CustomError.internalServer(message: "Error al crear el usuario");
+    }
+  }
+
+  Future<void> _validateUserExist(CreateUserDto dto) async {
+    final queryExisting = await _dbClient.query(
+      _userTableName,
+      conditions: (where: 'name = ?', whereArgs: [dto.name]),
+    );
+
+    if (queryExisting.isNotEmpty) {
+      throw CustomError.badRequest(
+        payload: [
+          (message: "There is an user with that name", path: "create user"),
+        ],
+        path: "MutationUserLocalDatasource",
+      );
     }
   }
 }
