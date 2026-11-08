@@ -18,7 +18,6 @@ void main() {
     });
 
     test('counts time spent while the app was suspended', () {
-      // Sin ticks intermedios: solo importan las dos marcas de tiempo.
       final duration = calculateRunDuration(
         startedAt: startedAt,
         endedAt: startedAt.add(const Duration(hours: 1, minutes: 5)),

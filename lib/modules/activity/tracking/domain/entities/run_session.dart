@@ -1,6 +1,5 @@
 import '../../../../../core/domain/types/app_uuid.dart';
 
-// Sesión finalizada: ambas marcas de tiempo son obligatorias.
 class RunSession {
   final AppUuid id;
   final DateTime startedAt;
